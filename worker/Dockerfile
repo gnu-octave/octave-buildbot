@@ -1,12 +1,11 @@
-# Copied from
-# https://github.com/buildbot/buildbot/blob/2b89992dbc4df9c5a773da862d55319f6221ddf4/worker/Dockerfile.py3
+# Ideas from https://github.com/buildbot/buildbot/
 
-# siko1056/octave-buildbot-worker
+# siko1056/octave-buildbot
 
 # Please follow docker best practices
 # https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/
 
-# Provides a base Ubuntu (18.04) image with latest buildbot worker installed.
+# Provides a base Ubuntu image with latest buildbot worker installed.
 # The worker image is not optimized for size, but rather uses Ubuntu for wider
 # package availability.
 
@@ -111,7 +110,7 @@ RUN pip3 --no-cache-dir install 'twisted[tls]' 'buildbot[bundle]' virtualenv
 RUN mkdir /buildbot
 RUN useradd --create-home --shell /bin/bash buildbot
 
-COPY buildbot.tac /buildbot/buildbot.tac
+COPY worker/buildbot.tac /buildbot/buildbot.tac
 
 RUN chown -R buildbot /buildbot
 
