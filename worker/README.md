@@ -37,12 +37,12 @@ WORKERPASS=secret_password
 
 ### 2. Pull the image and create a container from it
 
-    docker pull siko1056/octave-buildbot-worker:latest
+    docker pull siko1056/octave-buildbot:latest-worker
 
     docker create \
       --env-file /path/to/worker01.env \
       --name octave-buildbot-worker \
-      siko1056/octave-buildbot-worker
+      siko1056/octave-buildbot:latest-worker
 
 ### 3. Start the container
 
