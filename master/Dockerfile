@@ -44,14 +44,10 @@ RUN pip3 --no-cache-dir install 'twisted[tls]' 'buildbot[bundle]' virtualenv
 # Prepare master directory
 
 RUN mkdir /buildbot
-RUN useradd --create-home --shell /bin/bash buildbot
 
 COPY master/start_buildbot.sh /buildbot/start_buildbot.sh
 COPY master/master.cfg        /buildbot/master.cfg
 
-RUN chown -R buildbot /buildbot
-
-USER buildbot
 WORKDIR /buildbot
 
 CMD ["/usr/bin/dumb-init", "/buildbot/start_buildbot.sh"]

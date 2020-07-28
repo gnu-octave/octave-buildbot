@@ -9,27 +9,49 @@ The Docker image "octave-buildbot-master" is configured by `master.cfg`
 contained in this repository.  This is a Buildbot configuration file, for more
 information read https://docs.buildbot.net/latest/index.html
 
-
 ## Start the Buildbot Master
 
-### 1. Configuration
+### 1. Pull the image and create a container from it
 
-Copy `master.cfg` from this repository and configure it to your needs.
-
-### 2. Pull the image and create a container from it
-
-    docker pull siko1056/octave-buildbot-master:latest
+    docker pull siko1056/octave-buildbot:latest-master
 
     docker create \
       --mount type=volume,source=octave-buildbot-master,target=/buildbot/master \
       --publish 8010:8010 \
       --publish 9989:9989 \
       --name octave-buildbot-master \
-      siko1056/octave-buildbot-master
+      siko1056/octave-buildbot:latest-master
 
-### 3. Start the container
+In the example above the name of the container is arbitrary.  Port 8010 is used
+for the web interface and port 9989 for the worker communication.  The port
+values must agree with `master.cfg`.
+
+Mounting a Docker volume is not required, but strongly suggested to maintain
+the state and configuration (`master.cfg`) of the Buildbot Master if the
+container is destroyed or recreated from the image.  Multiple Buildbot Masters
+**cannot** share the same Docker volume.
+
+### 2. Start the container with default configuration
 
     docker start octave-buildbot-master
+
+### 3. Configure the Buildbot Master
+
+Once the container is started with the default configuration you can modify
+`master.cfg` to your needs.  To find the respective storage location of the
+Docker volume, use
+
+    docker volume inspect octave-buildbot-master
+    ...
+    "Mountpoint": "/var/lib/docker/storage/volumes/octave-buildbot-master/_data",
+    ...
+
+This configuration is persistent and takes effect after restarting the
+container:
+
+    docker restart octave-buildbot-master
+
+In case of configuration errors, check `twistd.log` in the Docker volume.
 
 ### 4. Optional: Make Buildbot master a systemd service
 
