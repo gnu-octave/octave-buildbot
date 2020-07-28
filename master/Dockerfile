@@ -39,7 +39,8 @@ RUN rm -Rf /usr/share/doc
 
 # Install required python packages
 
-RUN pip3 --no-cache-dir install 'twisted[tls]' 'buildbot[bundle]' virtualenv
+RUN pip3 install --upgrade --no-cache-dir \
+      'twisted[tls]' 'buildbot[bundle]' virtualenv
 
 # Prepare master directory
 
