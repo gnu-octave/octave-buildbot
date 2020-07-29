@@ -109,24 +109,24 @@ RUN apt-get --yes update  && \
 RUN SUNDIALS_VERSION=5.3.0  && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
-    wget "https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz" && \
+    wget -q "https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz" && \
     tar -xf sundials-${SUNDIALS_VERSION}.tar.gz  && \
     cd      sundials-${SUNDIALS_VERSION}         && \
     mkdir build  && \
     cd    build  && \
-    cmake                                         \
-      -DEXAMPLES_ENABLE=OFF                       \
-      -DKLU_ENABLE=ON                             \
-      -DKLU_INCLUDE_DIR=/usr/include/suitesparse  \
-      -DKLU_LIBRARY_DIR=/usr/lib                  \
-      -DBUILD_ARKODE=OFF                          \
-      -DBUILD_CVODE=OFF                           \
-      -DBUILD_CVODES=OFF                          \
-      -DBUILD_IDA=ON                              \
-      -DBUILD_IDAS=OFF                            \
-      -DBUILD_KINSOL=OFF                          \
-      -DBUILD_CPODES=OFF                          \
-      -DCMAKE_INSTALL_PREFIX=/usr                 \
+    cmake                                          \
+      -DEXAMPLES_ENABLE_C=OFF                      \
+      -DKLU_ENABLE=ON                              \
+      -DKLU_INCLUDE_DIR=/usr/include/suitesparse   \
+      -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu  \
+      -DBUILD_ARKODE=OFF                           \
+      -DBUILD_CVODE=OFF                            \
+      -DBUILD_CVODES=OFF                           \
+      -DBUILD_IDA=ON                               \
+      -DBUILD_IDAS=OFF                             \
+      -DBUILD_KINSOL=OFF                           \
+      -DBUILD_CPODES=OFF                           \
+      -DCMAKE_INSTALL_PREFIX=/usr                  \
       ..              && \
     make -j4          && \
     make install      && \
