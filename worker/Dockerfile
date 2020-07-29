@@ -14,9 +14,9 @@ MAINTAINER  Siko1056
 
 # Install security updates and required packages.
 
-RUN apt-get --yes update
-RUN apt-get --yes upgrade
-RUN apt-get --yes install \
+RUN apt-get --yes update  && \
+    apt-get --yes upgrade && \
+    apt-get --yes install \
       autoconf \
       automake \
       bison \
@@ -60,7 +60,6 @@ RUN apt-get --yes install \
       libqt5opengl5-dev \
       libreadline-dev \
       libsuitesparse-dev \
-      libsundials-dev \
       librsvg2-bin \
       libseccomp-dev \
       libssl-dev \
@@ -68,6 +67,7 @@ RUN apt-get --yes install \
       libtool \
       libxft-dev \
       lpr \
+      lzip \
       make \
       mercurial \
       openjdk-11-jdk \
@@ -95,26 +95,49 @@ RUN apt-get --yes install \
       # In a non-docker environment, these are automatically reaped by init
       # (process 1), so we need to simulate that here.
       # See https://github.com/Yelp/dumb-init
-      dumb-init
-RUN apt-get --yes clean
-RUN apt-get --yes autoremove
-RUN rm -Rf /var/lib/apt/lists/*
-RUN rm -Rf /usr/share/doc
+      dumb-init                 && \
+    apt-get --yes clean         && \
+    apt-get --yes autoremove    && \
+    rm -Rf /var/lib/apt/lists/* && \
+    rm -Rf /usr/share/doc       && \
+    # Install required python packages
+    pip3 install --upgrade --no-cache-dir \
+      'twisted[tls]' 'buildbot[bundle]' virtualenv
 
-# Install required python packages
+# Install Sundials
 
-RUN pip3 --no-cache-dir install 'twisted[tls]' 'buildbot[bundle]' virtualenv
+RUN SUNDIALS_VERSION=5.3.0  && \
+    mkdir -p /tmp/build     && \
+    cd       /tmp/build     && \
+    wget "https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz" && \
+    tar -xf sundials-${SUNDIALS_VERSION}.tar.gz  && \
+    cd      sundials-${SUNDIALS_VERSION}         && \
+    mkdir build  && \
+    cd    build  && \
+    cmake                                         \
+      -DEXAMPLES_ENABLE=OFF                       \
+      -DKLU_ENABLE=ON                             \
+      -DKLU_INCLUDE_DIR=/usr/include/suitesparse  \
+      -DKLU_LIBRARY_DIR=/usr/lib                  \
+      -DBUILD_ARKODE=OFF                          \
+      -DBUILD_CVODE=OFF                           \
+      -DBUILD_CVODES=OFF                          \
+      -DBUILD_IDA=ON                              \
+      -DBUILD_IDAS=OFF                            \
+      -DBUILD_KINSOL=OFF                          \
+      -DBUILD_CPODES=OFF                          \
+      -DCMAKE_INSTALL_PREFIX=/usr                 \
+      ..              && \
+    make -j4          && \
+    make install      && \
+    rm -rf /tmp/build
 
 # Prepare worker directory
 
 RUN mkdir /buildbot
-RUN useradd --create-home --shell /bin/bash buildbot
 
 COPY worker/buildbot.tac /buildbot/buildbot.tac
 
-RUN chown -R buildbot /buildbot
-
-USER buildbot
 WORKDIR /buildbot
 
 CMD ["/usr/bin/dumb-init", "twistd", "--pidfile=", "-ny", "buildbot.tac"]

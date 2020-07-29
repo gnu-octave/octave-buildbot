@@ -14,9 +14,9 @@ MAINTAINER  Siko1056
 
 # Install security updates and required packages.
 
-RUN apt-get --yes update
-RUN apt-get --yes upgrade
-RUN apt-get --yes install \
+RUN apt-get --yes update  && \
+    apt-get --yes upgrade && \
+    apt-get --yes install \
       build-essential \
       curl \
       git \
@@ -31,15 +31,13 @@ RUN apt-get --yes install \
       # In a non-docker environment, these are automatically reaped by init
       # (process 1), so we need to simulate that here.
       # See https://github.com/Yelp/dumb-init
-      dumb-init
-RUN apt-get --yes clean
-RUN apt-get --yes autoremove
-RUN rm -Rf /var/lib/apt/lists/*
-RUN rm -Rf /usr/share/doc
-
-# Install required python packages
-
-RUN pip3 install --upgrade --no-cache-dir \
+      dumb-init                 && \
+    apt-get --yes clean         && \
+    apt-get --yes autoremove    && \
+    rm -Rf /var/lib/apt/lists/* && \
+    rm -Rf /usr/share/doc       && \
+    # Install required python packages
+    pip3 install --upgrade --no-cache-dir \
       'twisted[tls]' 'buildbot[bundle]' virtualenv
 
 # Prepare master directory
