@@ -53,6 +53,20 @@ container:
 
 In case of configuration errors, check `twistd.log` in the Docker volume.
 
+### 4. Configure a web space
+
+Depending on your needs, it can be useful to store the build results.
+If the Buildbot Master runs a webserver with a public `/var/www/web.site/data`
+directory, you can choose to store the build results in the container's
+`/buildbot/data` directory bound to `/var/www/web.site/data` using
+[file transfers](https://docs.buildbot.net/latest/manual/configuration/steps/file_transfer.html).
+This binding is realized with an additional container creation parameter in
+step 1:
+
+    docker create \
+      --mount type=bind,source=/var/www/web.site/data,target=/buildbot/data \
+      ...
+
 ### 4. Optional: Make Buildbot master a systemd service
 
 If your system uses [systemd](https://systemd.io/), you can create as user
