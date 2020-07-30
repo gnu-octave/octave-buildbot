@@ -21,6 +21,7 @@ RUN apt-get --yes update  && \
       automake \
       bison \
       build-essential \
+      ccache \
       clang \
       cmake \
       dbus \
