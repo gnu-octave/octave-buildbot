@@ -67,7 +67,7 @@ step 1:
       --mount type=bind,source=/var/www/web.site/data,target=/buildbot/data \
       ...
 
-### 4. Optional: Make Buildbot master a systemd service
+### 5. Optional: Make Buildbot master a systemd service
 
 If your system uses [systemd](https://systemd.io/), you can create as user
 `root` the file `/etc/systemd/system/buildbot-master.service`:
