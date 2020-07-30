@@ -42,7 +42,18 @@ WORKERPASS=secret_password
     docker create \
       --env-file /path/to/worker01.env \
       --name octave-buildbot-worker \
+      --mount type=volume,source=octave-buildbot-worker,target=/buildbot \
       siko1056/octave-buildbot:latest-worker
+
+In the example above the name of the container is arbitrary.
+
+Mounting a Docker volume is not required, but strongly suggested:
+- Keep repository data and downloaded installer files when the container is
+  destroyed or replaced.  This avoids heavy internet usage and build failures
+  due to unresponsive servers.
+- More control over the storage location.  A worker can easily use up to 50 GB
+  of storage.
+Multiple Buildbot Workers **cannot** share the same Docker volume.
 
 ### 3. Start the container
 
