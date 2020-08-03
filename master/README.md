@@ -3,6 +3,9 @@
 A Dockerfile to create a Buildbot Master managing builds of
 [GNU Octave](https://www.octave.org).
 
+For minimal local setup of Buildbot Master and Worker, see the
+["test" subdirectory](https://github.com/siko1056/octave-buildbot/tree/master/test).
+
 ## Docker Image
 
 The Docker image "octave-buildbot-master" is configured by `master.cfg`

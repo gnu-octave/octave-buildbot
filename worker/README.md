@@ -3,6 +3,9 @@
 A Dockerfile to create a Buildbot Worker able to build
 [GNU Octave](https://www.octave.org).
 
+For minimal local setup of Buildbot Master and Worker, see the
+["test" subdirectory](https://github.com/siko1056/octave-buildbot/tree/master/test).
+
 ## Docker Image
 
 Here is the list of configuration variables for the "octave-buildbot-worker"

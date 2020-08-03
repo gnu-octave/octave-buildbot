@@ -8,3 +8,6 @@ The documentation for the Buildbot Master can be found in the
 and for the Buildbot Worker in the
 ["worker" subdirectory](https://github.com/siko1056/octave-buildbot/tree/master/worker),
 respectively.
+
+For minimal local setup of Buildbot Master and Worker, see the
+["test" subdirectory](https://github.com/siko1056/octave-buildbot/tree/master/test).
