@@ -5,7 +5,7 @@
 DATA_DIR=$(pwd)/data
 
 # Leave empty in a distributed setup, necessary for local setup.
-NETWORK_STR="--network=host"
+NETWORK_FLAG="--network=host"
 
 function recreate_and_start_buildbot {
   echo "--------------------------------------------------------------------"
@@ -25,20 +25,18 @@ function recreate_and_start_buildbot {
   #
   if [ "$1" = "master" ]; then
     mkdir -p ${DATA_DIR}
-    ${CONTAINER_CMD} create \
-      --mount type=volume,source=octave-buildbot-master,target=/buildbot/master \
-      --mount type=bind,source=${DATA_DIR},target=/buildbot/data \
+    ${CONTAINER_CMD} create ${NETWORK_FLAG} \
       --publish 8010:8010 \
       --publish 9989:9989 \
-      ${NETWORK_STR} \
-      --name octave-buildbot-master \
+      --mount  type=bind,source=${DATA_DIR},target=/buildbot/data \
+      --volume octave-buildbot-master:/buildbot/master:Z${EXEC_FLAG} \
+      --name   octave-buildbot-master \
       siko1056/octave-buildbot:latest-master
   else
-    ${CONTAINER_CMD} create \
+    ${CONTAINER_CMD} create ${NETWORK_FLAG} \
       --env-file worker01.env \
-      --name octave-buildbot-worker \
-      --mount type=volume,source=octave-buildbot-worker,target=/buildbot \
-      ${NETWORK_STR} \
+      --volume octave-buildbot-worker:/buildbot:Z${EXEC_FLAG} \
+      --name   octave-buildbot-worker \
       siko1056/octave-buildbot:latest-worker
   fi
 
@@ -70,9 +68,11 @@ function cleanup {
 if [ -x "$(command -v docker)" ]; then
   CONTAINER_CMD=docker
   IMG_PRUNE_FLAG="-f"
+  EXEC_FLAG=
 elif [ -x "$(command -v podman)" ]; then
   CONTAINER_CMD=podman
   IMG_PRUNE_FLAG=
+  EXEC_FLAG=",exec"
 else
   echo "ERROR: Cannot find 'docker' or 'podman'."
   exit 1

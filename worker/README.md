@@ -44,8 +44,8 @@ WORKERPASS=secret_password
 
     docker create \
       --env-file /path/to/worker01.env \
-      --name octave-buildbot-worker \
-      --mount type=volume,source=octave-buildbot-worker,target=/buildbot \
+      --volume octave-buildbot-worker:/buildbot:Z \
+      --name   octave-buildbot-worker \
       siko1056/octave-buildbot:latest-worker
 
 In the example above the name of the container is arbitrary.
@@ -56,6 +56,14 @@ Mounting a Docker volume is not required, but strongly suggested:
   due to unresponsive servers.
 - More control over the storage location.  A worker can easily use up to 50 GB
   of storage.
+- The [mount option `Z`](https://docs.docker.com/storage/bind-mounts/#configure-the-selinux-label)
+  is necessary, if
+  [selinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux)
+  is used on the system.
+  If [Podman](https://podman.io/) is used instead of Docker, the
+  [`exec`](https://docs.podman.io/en/latest/markdown/podman-create.1.html)
+  flag should be additionally set
+  `--volume octave-buildbot-worker:/buildbot:Z,exec`.
 Multiple Buildbot Workers **cannot** share the same Docker volume.
 
 ### 3. Start the container

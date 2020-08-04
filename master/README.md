@@ -19,9 +19,9 @@ information read https://docs.buildbot.net/latest/index.html
     docker pull siko1056/octave-buildbot:latest-master
 
     docker create \
-      --mount type=volume,source=octave-buildbot-master,target=/buildbot/master \
       --publish 8010:8010 \
       --publish 9989:9989 \
+      --volume octave-buildbot-master:/buildbot/master:Z \
       --name octave-buildbot-master \
       siko1056/octave-buildbot:latest-master
 
@@ -29,10 +29,18 @@ In the example above the name of the container is arbitrary.  Port 8010 is used
 for the web interface and port 9989 for the worker communication.  The port
 values must agree with `master.cfg`.
 
-Mounting a Docker volume is not required, but strongly suggested to maintain
-the state and configuration (`master.cfg`) of the Buildbot Master if the
-container is destroyed or recreated from the image.  Multiple Buildbot Masters
-**cannot** share the same Docker volume.
+Mounting a Docker volume is not required, but strongly suggested:
+- Maintain the state and configuration (`master.cfg`) of the Buildbot Master,
+  if the container is destroyed or recreated from the image.
+- The [mount option `Z`](https://docs.docker.com/storage/bind-mounts/#configure-the-selinux-label)
+  is necessary, if
+  [selinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux)
+  is used on the system.
+  If [Podman](https://podman.io/) is used instead of Docker, the
+  [`exec`](https://docs.podman.io/en/latest/markdown/podman-create.1.html)
+  flag should be additionally set
+  `--volume octave-buildbot-master:/buildbot/master:Z,exec`.
+Multiple Buildbot Masters **cannot** share the same Docker volume.
 
 ### 2. Start the container with default configuration
 
