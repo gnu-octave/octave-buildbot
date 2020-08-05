@@ -36,6 +36,7 @@ RUN apt-get --yes update  && \
       git \
       gnuplot \
       gperf \
+      graphviz \
       gzip \
       icoutils \
       less \
