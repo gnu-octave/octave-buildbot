@@ -22,8 +22,8 @@ workername = os.environ.get("WORKERNAME", 'docker')
 passwd = os.environ.get("WORKERPASS")
 
 # ccache configuration (disabled by default)
-if ("CCACHE_DISABLE" not in os.environ)
-    and ("CCACHE_NODISABLE" not in os.environ):
+if (("CCACHE_DISABLE" not in os.environ)
+    and ("CCACHE_NODISABLE" not in os.environ)):
   os.environ["CCACHE_DISABLE"] = "1"
 os.environ["CCACHE_DIR"] = os.environ.get("CCACHE_DIR", "/buildbot/.ccache")
 os.environ["CCACHE_MAXSIZE"] = os.environ.get("CCACHE_MAXSIZE", "10G")
