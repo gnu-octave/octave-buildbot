@@ -13,20 +13,12 @@ basedir = os.environ.get("BUILDBOT_BASEDIR",
     os.path.abspath(os.path.dirname(__file__)))
 application = service.Application('buildbot-worker')
 
-
 application.setComponent(ILogObserver, FileLogObserver(sys.stdout).emit)
 # and worker on the same process!
 buildmaster_host = os.environ.get("BUILDMASTER", 'localhost')
 port = int(os.environ.get("BUILDMASTER_PORT", 9989))
 workername = os.environ.get("WORKERNAME", 'docker')
 passwd = os.environ.get("WORKERPASS")
-
-# ccache configuration (disabled by default)
-if (("CCACHE_DISABLE" not in os.environ)
-    and ("CCACHE_NODISABLE" not in os.environ)):
-  os.environ["CCACHE_DISABLE"] = "1"
-os.environ["CCACHE_DIR"] = os.environ.get("CCACHE_DIR", "/buildbot/.ccache")
-os.environ["CCACHE_MAXSIZE"] = os.environ.get("CCACHE_MAXSIZE", "10G")
 
 # delete the password from the environ so that it is not leaked in the log
 blacklist = os.environ.get("WORKER_ENVIRONMENT_BLACKLIST", "WORKERPASS").split()

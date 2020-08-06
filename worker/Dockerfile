@@ -142,7 +142,9 @@ RUN SUNDIALS_VERSION=5.3.0  && \
 RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
     ln -s /usr/bin/ccache /usr/local/bin/g++ && \
     ln -s /usr/bin/ccache /usr/local/bin/c++ && \
-    ln -s /usr/bin/ccache /usr/local/bin/cc
+    ln -s /usr/bin/ccache /usr/local/bin/cc  && \
+    echo -e "disable = true\nmax_size = 10.0G\ncache_dir = /buildbot/.ccache" \
+      > /root/.ccache/ccache.conf
 
 # Prepare worker directory
 
