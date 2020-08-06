@@ -143,6 +143,7 @@ RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
     ln -s /usr/bin/ccache /usr/local/bin/g++ && \
     ln -s /usr/bin/ccache /usr/local/bin/c++ && \
     ln -s /usr/bin/ccache /usr/local/bin/cc  && \
+    mkdir -p /root/.ccache                   && \
     echo -e "disable = true\nmax_size = 10.0G\ncache_dir = /buildbot/.ccache" \
       > /root/.ccache/ccache.conf
 
