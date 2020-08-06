@@ -137,6 +137,13 @@ RUN SUNDIALS_VERSION=5.3.0  && \
     make install      && \
     rm -rf /tmp/build
 
+# Prepare ccache
+
+RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
+    ln -s /usr/bin/ccache /usr/local/bin/g++ && \
+    ln -s /usr/bin/ccache /usr/local/bin/c++ && \
+    ln -s /usr/bin/ccache /usr/local/bin/cc
+
 # Prepare worker directory
 
 RUN mkdir /buildbot

@@ -70,7 +70,22 @@ Multiple Buildbot Workers **cannot** share the same Docker volume.
 
     docker start octave-buildbot-worker
 
-### 4. Optional: Make Buildbot worker a systemd service
+### 4. Optional: Use ccache
+
+All settings mentioned
+[in the ccache manual](https://ccache.dev/manual/3.7.11.html#_configuration)
+can be passed as environment variables to the container:
+
+- `CCACHE_DISABLE=1` (default, to disable the usage of ccache) or
+  `CCACHE_NODISABLE=1` (to enable the usage of ccache).  If none of the two
+  settings is given, `CCACHE_DISABLE=1` will be set.
+- `CCACHE_MAXSIZE` (default: `10G`): If ccache is enabled, allow usage of
+  10 GB of disk space.
+- `CCACHE_DIR` (default: `/buildbot/.ccache`): If ccache is enabled, the cached
+  compiler outputs are stored there.  This storage location is in a Docker
+  volume, as described above.
+
+### 5. Optional: Make Buildbot worker a systemd service
 
 If your system uses [systemd](https://systemd.io/), you can create as user
 `root` the file `/etc/systemd/system/buildbot-worker.service`:
