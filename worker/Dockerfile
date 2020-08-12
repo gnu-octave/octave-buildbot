@@ -12,7 +12,7 @@
 FROM        ubuntu:18.04
 MAINTAINER  Siko1056
 
-ENV LAST_UPDATED=2020-08-05
+ENV LAST_UPDATED=2020-08-12
 
 # Install security updates and required packages.
 
@@ -94,6 +94,7 @@ RUN apt-get --yes update  && \
       transfig \
       unzip \
       wget \
+      xvfb \
       zlib1g-dev \
       zip \
       # Test runs produce a great quantity of dead grandchild processes.
