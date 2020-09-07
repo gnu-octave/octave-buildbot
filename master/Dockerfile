@@ -1,6 +1,6 @@
 # Ideas from https://github.com/buildbot/buildbot/
 
-# siko1056/octave-buildbot
+# gnu-octave/octave-buildbot
 
 # Please follow docker best practices
 # https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/

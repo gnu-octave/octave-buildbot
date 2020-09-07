@@ -4,7 +4,7 @@ A Dockerfile to create a Buildbot Worker able to build
 [GNU Octave](https://www.octave.org).
 
 For minimal local setup of Buildbot Master and Worker, see the
-["test" subdirectory](https://github.com/siko1056/octave-buildbot/tree/master/test).
+["test" subdirectory](https://github.com/gnu-octave/octave-buildbot/tree/master/test).
 
 ## Docker Image
 
@@ -40,13 +40,13 @@ WORKERPASS=secret_password
 
 ### 2. Pull the image and create a container from it
 
-    docker pull siko1056/octave-buildbot:latest-worker
+    docker pull gnuoctave/buildbot:latest-worker
 
     docker create \
       --env-file /path/to/worker01.env \
       --volume octave-buildbot-worker:/buildbot:Z \
       --name   octave-buildbot-worker \
-      siko1056/octave-buildbot:latest-worker
+      gnuoctave/buildbot:latest-worker
 
 In the example above the name of the container is arbitrary.
 

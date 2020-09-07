@@ -13,7 +13,7 @@ function recreate_and_start_buildbot {
   echo "--------------------------------------------------------------------"
 
   # Get the new image.
-  ${CONTAINER_CMD} pull docker.io/siko1056/octave-buildbot:latest-$1
+  ${CONTAINER_CMD} pull docker.io/gnuoctave/buildbot:latest-$1
 
   # Stop and remove the old container.
   ${CONTAINER_CMD} stop octave-buildbot-$1
@@ -31,13 +31,13 @@ function recreate_and_start_buildbot {
       --mount  type=bind,source=${DATA_DIR},target=/buildbot/data \
       --volume octave-buildbot-master:/buildbot/master:Z${EXEC_FLAG} \
       --name   octave-buildbot-master \
-      siko1056/octave-buildbot:latest-master
+      gnuoctave/buildbot:latest-master
   else
     ${CONTAINER_CMD} create ${NETWORK_FLAG} \
       --env-file worker01.env \
       --volume octave-buildbot-worker:/buildbot:Z${EXEC_FLAG} \
       --name   octave-buildbot-worker \
-      siko1056/octave-buildbot:latest-worker
+      gnuoctave/buildbot:latest-worker
   fi
 
   # Start the new container.
@@ -60,8 +60,8 @@ function cleanup {
   rm -Rf ${DATA_DIR}
 
   # Remove all images.
-  #${CONTAINER_CMD} rmi siko1056/octave-buildbot:latest-worker
-  #${CONTAINER_CMD} rmi siko1056/octave-buildbot:latest-master
+  #${CONTAINER_CMD} rmi gnuoctave/buildbot:latest-worker
+  #${CONTAINER_CMD} rmi gnuoctave/buildbot:latest-master
 }
 
 # Detect supported container management tool.
