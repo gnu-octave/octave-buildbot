@@ -12,7 +12,7 @@
 FROM        ubuntu:18.04
 MAINTAINER  Siko1056
 
-ENV LAST_UPDATED=2020-08-12
+ENV LAST_UPDATED=2020-09-07
 
 # Install security updates and required packages.
 
@@ -40,7 +40,7 @@ RUN apt-get --yes update  && \
     rm -Rf /usr/share/doc       && \
     # Install required python packages
     pip3 install --upgrade --no-cache-dir \
-      'twisted[tls]' 'buildbot[bundle]' virtualenv
+      'twisted[tls]' 'buildbot[bundle]' virtualenv buildbot-profiler
 
 # Prepare master directory
 
