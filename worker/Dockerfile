@@ -76,6 +76,7 @@ RUN apt-get --yes update  && \
       make \
       mercurial \
       openjdk-11-jdk \
+      p7zip \
       perl \
       pkg-config \
       portaudio19-dev \
