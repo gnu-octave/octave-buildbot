@@ -25,10 +25,13 @@ RUN apt-get --yes update  && \
       libffi-dev \
       libssl-dev \
       mercurial \
+      p7zip \
       python3-dev \
       python3-pip \
       python3-setuptools \
       subversion \
+      unzip \
+      zip \
       # Test runs produce a great quantity of dead grandchild processes.
       # In a non-docker environment, these are automatically reaped by init
       # (process 1), so we need to simulate that here.
