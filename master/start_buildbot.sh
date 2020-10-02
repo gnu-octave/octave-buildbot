@@ -19,10 +19,16 @@ then
   mkdir $BUILDBOT_MASTER_DIR
 fi
 
-# Copy default configuration if none exists and exit.
+# Copy default configuration if none exists.
 if [[ ! -f "$BUILDBOT_MASTER_DIR/master.cfg" ]]
 then
   cp /buildbot/master.cfg $BUILDBOT_MASTER_DIR
+fi
+
+# Copy helper script if not exists.
+if [[ ! -f "$BUILDBOT_MASTER_DIR/tidy_up.sh" ]]
+then
+  cp /buildbot/tidy_up.sh $BUILDBOT_MASTER_DIR
 fi
 
 # Create a fresh Buildbot Master if no previous found.

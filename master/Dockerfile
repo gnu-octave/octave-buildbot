@@ -50,6 +50,7 @@ RUN apt-get --yes update  && \
 RUN mkdir /buildbot
 
 COPY master/start_buildbot.sh /buildbot/start_buildbot.sh
+COPY master/tidy_up.sh        /buildbot/tidy_up.sh
 COPY master/master.cfg        /buildbot/master.cfg
 
 WORKDIR /buildbot
