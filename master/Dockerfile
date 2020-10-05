@@ -43,7 +43,7 @@ RUN apt-get --yes update  && \
     rm -Rf /usr/share/doc       && \
     # Install required python packages
     pip3 install --upgrade --no-cache-dir \
-      'twisted[tls]' 'buildbot[bundle]' virtualenv buildbot-profiler
+      'twisted[tls]' 'buildbot[bundle]' virtualenv buildbot-profiler Flask
 
 # Prepare master directory
 
