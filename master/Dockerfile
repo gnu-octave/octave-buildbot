@@ -24,6 +24,7 @@ RUN apt-get --yes update  && \
       git \
       libffi-dev \
       libssl-dev \
+      lighttpd \
       mercurial \
       p7zip \
       python3-dev \
