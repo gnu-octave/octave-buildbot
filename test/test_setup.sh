@@ -1,40 +1,45 @@
 #!/bin/bash
 #set -x #echo on
 
-# Webspace directory for the "master".
-DATA_DIR=$(pwd)/data
-
-# Leave empty in a distributed setup, necessary for local setup.
-NETWORK_FLAG="--network=host"
+# - Information for volume target ending with ":z" or ":Z"
+#   https://docs.docker.com/storage/bind-mounts/#configure-the-selinux-label
+#
+#   For podman this must be ":z,exec" or ":Z,exec"
 
 function recreate_and_start_buildbot {
   echo "--------------------------------------------------------------------"
   echo "  Use '${CONTAINER_CMD}' to update the Buildbot '$1'."
   echo "--------------------------------------------------------------------"
 
-  # Get the new image.
-  ${CONTAINER_CMD} pull docker.io/gnuoctave/buildbot:latest-$1
-
-  # Stop and remove the old container.
-  ${CONTAINER_CMD} stop octave-buildbot-$1
-  ${CONTAINER_CMD} rm   octave-buildbot-$1
-
   # Create a new container from the new image.
-  #
-  #  Hint:
-  #
   if [ "$1" = "master" ]; then
-    mkdir -p ${DATA_DIR}
-    ${CONTAINER_CMD} create ${NETWORK_FLAG} \
+    ${CONTAINER_CMD} create \
       --publish 8010:8010 \
       --publish 9989:9989 \
-      --mount  type=bind,source=${DATA_DIR},target=/buildbot/data \
       --volume octave-buildbot-master:/buildbot/master:Z${EXEC_FLAG} \
+      --volume octave-buildbot-master-data:/buildbot/data:z${EXEC_FLAG} \
       --name   octave-buildbot-master \
       gnuoctave/buildbot:latest-master
+
+    ${CONTAINER_CMD} create \
+      --env NGINX_HOST=localhost \
+      --env NGINX_PORT=80 \
+      --publish 8000:80 \
+      --volume octave-buildbot-master-data:/usr/share/nginx/html:z${EXEC_FLAG} \
+      --name   octave-buildbot-master-web \
+      nginx
+    ${CONTAINER_CMD} start octave-buildbot-master-web
+    docker exec octave-buildbot-master-web rm -Rf /usr/share/nginx/html/50x.html
+    docker exec octave-buildbot-master-web rm -Rf /usr/share/nginx/html/index.html
   else
-    ${CONTAINER_CMD} create ${NETWORK_FLAG} \
-      --env-file worker01.env \
+    # "--network=host" only necessary for local setup.
+    ${CONTAINER_CMD} create \
+      --network=host \
+      --env BUILDMASTER=localhost \
+      --env BUILDMASTER_PORT=9989 \
+      --env WORKERNAME=worker01 \
+      --env WORKERPASS=secret_password \
+      --env CCACHE_NODISABLE=1 \
       --volume octave-buildbot-worker:/buildbot:Z${EXEC_FLAG} \
       --name   octave-buildbot-worker \
       gnuoctave/buildbot:latest-worker
@@ -42,9 +47,6 @@ function recreate_and_start_buildbot {
 
   # Start the new container.
   ${CONTAINER_CMD} start octave-buildbot-$1
-
-  # Display volume information.
-  ${CONTAINER_CMD} volume inspect octave-buildbot-$1
 }
 
 function cleanup {
@@ -53,15 +55,24 @@ function cleanup {
   ${CONTAINER_CMD} rm   octave-buildbot-worker
   ${CONTAINER_CMD} stop octave-buildbot-master
   ${CONTAINER_CMD} rm   octave-buildbot-master
+  ${CONTAINER_CMD} stop octave-buildbot-master-web
+  ${CONTAINER_CMD} rm   octave-buildbot-master-web
 
   # Remove all volumes and the $DATA directory.
   ${CONTAINER_CMD} volume rm octave-buildbot-worker
   ${CONTAINER_CMD} volume rm octave-buildbot-master
-  rm -Rf ${DATA_DIR}
+  ${CONTAINER_CMD} volume rm octave-buildbot-master-data
 
   # Remove all images.
   #${CONTAINER_CMD} rmi gnuoctave/buildbot:latest-worker
   #${CONTAINER_CMD} rmi gnuoctave/buildbot:latest-master
+}
+
+function update {
+  # Get the newest images.
+  ${CONTAINER_CMD} pull docker.io/gnuoctave/buildbot:latest-master
+  ${CONTAINER_CMD} pull docker.io/gnuoctave/buildbot:latest-worker
+  ${CONTAINER_CMD} pull nginx
 }
 
 # Detect supported container management tool.
@@ -80,7 +91,7 @@ fi
 
 # Determine task.
 case $1 in
-  "all")
+  "up")
     recreate_and_start_buildbot master
     recreate_and_start_buildbot worker
     ;;
@@ -90,11 +101,14 @@ case $1 in
   "worker")
     recreate_and_start_buildbot worker
     ;;
-  "cleanup")
+  "down")
     cleanup
     ;;
+  "update")
+    update
+    ;;
   *)
-    echo "Usage: $0 {all|master|worker|cleanup}"
+    echo "Usage: $0 {up|down|master|worker}"
     exit 1
 esac
 

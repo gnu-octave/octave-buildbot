@@ -1,0 +1,57 @@
+version: "3.7"
+
+services:
+  buildbot-master:
+    image: gnuoctave/buildbot:latest-master
+    ports:
+      - target: 8010
+        published: 8010  # Buildbot master web interface
+        protocol: tcp
+        mode: host
+      - target: 9989
+        published: 9989  # Buildbot worker
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: volume
+        source: master_config
+        target: /buildbot/master
+      - type: volume
+        source: master_data
+        target: /buildbot/data
+
+  worker:
+    image: gnuoctave/buildbot:latest-worker
+    environment:
+      - BUILDMASTER=localhost
+      - BUILDMASTER_PORT=9989
+      - WORKERNAME=worker01
+      - WORKERPASS=secret_password
+      - CCACHE_NODISABLE=1
+    volumes:
+      - type: volume
+        source: worker_data
+        target: /buildbot
+    network_mode: "host"
+
+  web:
+    image: nginx
+    ports:
+      - target: 80
+        published: 8000  # Simply access Buildbot master build artifacts
+        protocol: tcp
+        mode: host
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    volumes:
+      - type: volume
+        source: master_data
+        target: /usr/share/nginx/html
+        volume:
+          nocopy: true
+
+volumes:
+  master_config:
+  master_data:
+  worker_data:

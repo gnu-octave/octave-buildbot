@@ -1,19 +1,22 @@
 # octave-buildbot-test
 
-The BASH script `test_setup.sh` creates a minimal local setup of Buildbot
-Master and Worker.  As user who is allowed to interact with Docker, you can
-create the complete example with:
+With `docker-compose` installed run
 
-    ./test_setup.sh all
+    docker-compose up
 
 If the commands succeed, you can see the Buildbot Master at
-http://localhost:8010/ in your local browser with the Worker connected.
+http://localhost:8010/ and the data is served at http://localhost:8000/
+in your local browser with the Worker connected.
 
-You can create the Buildbot Master and Worker separately:
+If `docker-compose` is not available, on CentOS 8 there is `podman` for
+example, an equivalent BASH script `test_setup.sh` creates the same setup.
 
-    ./test_setup.sh master
-    ./test_setup.sh worker
+    ./test_setup.sh up
 
-To uninstall the example from Docker, type:
+To uninstall the example, type one of:
 
-    ./test_setup.sh cleanup
+    docker-compose down
+
+or
+
+    ./test_setup.sh down

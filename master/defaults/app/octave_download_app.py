@@ -9,11 +9,8 @@ from flask import render_template
 from buildbot.process.results import statusToString
 
 octavedownloadapp = Flask(__name__,
-                          root_path = os.path.dirname(__file__))
-
-# This allows to work on the template without having to restart Buildbot.
-octavedownloadapp.config["TEMPLATES_AUTO_RELOAD"] = True
-
+                          root_path = os.path.dirname(__file__),
+                          template_folder = "app")
 
 @octavedownloadapp.route("/index.html")
 def main():
@@ -55,7 +52,3 @@ def main():
                          builds = builds,
                          oct_build_id_dirs = oct_build_id_dirs,
                          oct_stable_url = oct_stable_url)
-
-@octavedownloadapp.route("/data")
-def main2():
-  return "Hi data"
