@@ -1,0 +1,33 @@
+<div class="container">
+  <style>
+  .container table {
+    border: 1px solid black;
+  }
+  .container th,
+  .container td {
+    padding: .5em;
+  }
+  </style>
+  <h3>List of recent GNU Octave builds</h3>
+  <table>
+  <tr>
+    <th>Octave HG ID<sup>1)</sup></th>
+    <th>Build date</th>
+  </tr>
+  {% for oct_build_id_dir in oct_build_id_dirs %}
+  <tr>
+    <td>
+      <a href="{{oct_stable_url}}/{{oct_build_id_dir.name}}">{{oct_build_id_dir.name}}</a>
+    </td>
+    <td>{{oct_build_id_dir.date}}</td>
+  </tr>
+  {% endfor %}
+  </table>
+  <br><br>
+  <ul>
+    <li>
+      <sup>1)</sup> Commit Mercurial (HG) ID at
+      <a href="https://hg.savannah.gnu.org/hgweb/octave/">https://hg.savannah.gnu.org/hgweb/octave/</a>
+    </li>
+  </ul>
+</div>

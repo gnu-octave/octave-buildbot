@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Helper script to tidy up the /data directory
+# Helper script to tidy up a directory, e.g. `/buildbot/data`, if a threshold
+# given in MegaByte is exceeded.
 #
-# Usage:  ./tidy_up.sh 60000 /some/path
+# Usage:  ./tidy_up.sh 60000 /buildbot/data
 
 DATA_THRESHOLD=$1  # MegaByte
 BUILD_SIZE="10000" # MegaByte
