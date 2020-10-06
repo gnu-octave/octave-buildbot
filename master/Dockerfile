@@ -50,7 +50,7 @@ RUN apt-get --yes update  && \
 
 RUN mkdir /buildbot
 
-COPY master/defaults/* /buildbot/defaults
+COPY master/defaults/* /buildbot/defaults/
 
 WORKDIR /buildbot
 
