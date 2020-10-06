@@ -50,7 +50,10 @@ RUN apt-get --yes update  && \
 
 RUN mkdir /buildbot
 
-COPY master/defaults/* /buildbot/defaults/
+COPY master/defaults/start_up.sh /buildbot/defaults/start_up.sh
+COPY master/defaults/tidy_up.sh  /buildbot/defaults/tidy_up.sh
+COPY master/defaults/master.cfg  /buildbot/defaults/master.cfg
+COPY master/defaults/app/*       /buildbot/defaults/app/
 
 WORKDIR /buildbot
 
