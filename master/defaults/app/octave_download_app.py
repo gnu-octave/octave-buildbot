@@ -10,7 +10,7 @@ from buildbot.process.results import statusToString
 
 octavedownloadapp = Flask(__name__,
                           root_path = os.path.dirname(__file__),
-                          template_folder = "app")
+                          template_folder = "")
 
 @octavedownloadapp.route("/index.html")
 def main():
@@ -25,17 +25,18 @@ def main():
 
   # Create list of directory names with time stamps.
   oct_build_id_dirs = []
-  with os.scandir(oct_stable_dir) as it:
-    for entry in it:
-      if entry.is_dir():
-        oct_build_id_dirs.append({
-          "name": entry.name,
-          "sort": os.path.getctime(entry),
-          "date": []
-        })
-        oct_build_id_dirs[-1]["date"] = time.strftime(
-          "%a, %Y %b %d %H:%M:%S %z",
-          time.gmtime(oct_build_id_dirs[-1]["sort"]))
+  if os.path.isdir(oct_stable_dir):
+    with os.scandir(oct_stable_dir) as it:
+      for entry in it:
+        if entry.is_dir():
+          oct_build_id_dirs.append({
+            "name": entry.name,
+            "sort": os.path.getctime(entry),
+            "date": []
+          })
+          oct_build_id_dirs[-1]["date"] = time.strftime(
+            "%a, %Y %b %d %H:%M:%S %z",
+            time.gmtime(oct_build_id_dirs[-1]["sort"]))
   # Ordered by newest directory first.
   oct_build_id_dirs = sorted(oct_build_id_dirs, key = lambda i: i["sort"], reverse=True)
 
