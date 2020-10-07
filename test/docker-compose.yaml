@@ -44,7 +44,7 @@ services:
     volumes:
       - type: volume
         source: master_data
-        target: /usr/share/nginx/html/data
+        target: /usr/share/nginx/html/buildbot/data
         volume:
           nocopy: true
       - type: bind
