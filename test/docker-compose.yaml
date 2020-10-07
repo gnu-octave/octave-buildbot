@@ -41,15 +41,16 @@ services:
         published: 8000  # Simply access Buildbot master build artifacts
         protocol: tcp
         mode: host
-    environment:
-      - NGINX_HOST=localhost
-      - NGINX_PORT=80
     volumes:
       - type: volume
         source: master_data
-        target: /usr/share/nginx/html
+        target: /usr/share/nginx/html/data
         volume:
           nocopy: true
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
 
 volumes:
   master_config:

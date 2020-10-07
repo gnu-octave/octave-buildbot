@@ -1,17 +1,18 @@
 # octave-buildbot-test
 
-With `docker-compose` installed run
+With Docker and `docker-compose` installed run
 
     docker-compose up
 
 If the commands succeed, you can see the Buildbot Master at
 http://localhost:8010/ and the data is served at http://localhost:8000/
-in your local browser with the Worker connected.
+in your local browser with a Buildbot Worker connected.
 
-If `docker-compose` is not available, on CentOS 8 there is `podman` for
-example, an equivalent BASH script `test_setup.sh` creates the same setup.
+If `docker-compose` is not available, an equivalent BASH script
+`container-compose.sh` creates the same setup supporting both Docker
+and Podman.
 
-    ./test_setup.sh up
+    ./container-compose.sh up
 
 To uninstall the example, type one of:
 
@@ -19,4 +20,4 @@ To uninstall the example, type one of:
 
 or
 
-    ./test_setup.sh down
+    ./container-compose.sh down

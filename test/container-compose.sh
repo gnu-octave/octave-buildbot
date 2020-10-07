@@ -25,12 +25,11 @@ function recreate_and_start_buildbot {
       --env NGINX_HOST=localhost \
       --env NGINX_PORT=80 \
       --publish 8000:80 \
-      --volume octave-buildbot-master-data:/usr/share/nginx/html:z${EXEC_FLAG} \
+      --volume octave-buildbot-master-data:/usr/share/nginx/html/data:z${EXEC_FLAG} \
+      --volume $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro \
       --name   octave-buildbot-master-web \
       nginx
     ${CONTAINER_CMD} start octave-buildbot-master-web
-    docker exec octave-buildbot-master-web rm -Rf /usr/share/nginx/html/50x.html
-    docker exec octave-buildbot-master-web rm -Rf /usr/share/nginx/html/index.html
   else
     # "--network=host" only necessary for local setup.
     ${CONTAINER_CMD} create \
@@ -108,7 +107,7 @@ case $1 in
     update
     ;;
   *)
-    echo "Usage: $0 {up|down|master|worker}"
+    echo "Usage: $0 {up|down|master|worker|update}"
     exit 1
 esac
 
