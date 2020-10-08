@@ -1,7 +1,7 @@
 <div class="container">
   <style>
   div.logo {
-    width: 45em;
+    max-width: 45em;
   }
   div.logo img {
     display: block;
@@ -12,12 +12,13 @@
   ul.buildlist li {
     margin: 1em;
   }
-  .container table {
+  details.buildlist {
+    max-width: 45em;
     border: 1px solid black;
   }
-  .container th,
-  .container td {
-    padding: .5em;
+  details.buildlist summary {
+    padding: 1em;
+    background-color: khaki;
   }
   </style>
   <div class="logo">
@@ -26,32 +27,49 @@
   </div>
   <h3>Recent GNU Octave builds</h3>
 
-  <ul class="buildlist">
-  {% for oct_build_id_dir in oct_build_id_dirs %}
-  <li>
-    <details{% if loop.index == 1 %} open{% endif %}>
-      <summary>
-        Octave <b>{{oct_build_id_dir.version}}</b>
-        &nbsp;&nbsp;
-        (hg id: <a target="_blank" href="{{oct_repo_url}}/rev/{{oct_build_id_dir.name}}">{{oct_build_id_dir.name}}</a>)
-        &nbsp;&nbsp;
-        {{oct_build_id_dir.date}}
-      </summary>
-      <ul class="buildlist">
-        <li>
-          Documentation:
-          <a target="_blank" href="{{oct_stable_url}}/{{oct_build_id_dir.name}}/octave.html/">[html]</a>
-          <a target="_blank" href="{{oct_stable_url}}/{{oct_build_id_dir.name}}/octave.pdf">[pdf]</a>
-          <a target="_blank" href="{{oct_stable_url}}/{{oct_build_id_dir.name}}/doxyhtml/">[doxygen]</a>
-        </li>
-        <li>
-          <a target="_blank" href="{{oct_stable_url}}/{{oct_build_id_dir.name}}/">[List of all files]</a>
-        </li>
-      </ul>
-    </details>
-  </li>
+  {% for build in builds %}
+  <details class="buildlist"{% if loop.index == 1 %} open{% endif %}>
+    <summary>
+      Octave <b>{{build.version}}</b>
+      &nbsp;&nbsp;
+      (hg id: <a target="_blank" href="{{config.repo_change_url}}/{{build.id}}">{{build.id}}</a>)
+      &nbsp;&nbsp;
+      {{build.date}}
+    </summary>
+    {%- macro do_final_list(files) -%}
+    {% for key, values in files|dictsort %}
+      {% for value in values %}
+      {% if key == 'html' %}
+        {% set value = value + '/' %}
+      {% endif %}
+        <a href="{{config.data_url}}/{{build.id}}/{{value}}">[{{key}}]</a>
+      {% endfor %}
+    {% endfor %}
+    {%- endmacro %}
+    {%- macro do_list(files) -%}
+    <ul class="buildlist">
+      {% for key, value in files|dictsort %}
+      <li>
+        <b>{{key}}</b>
+        {% if key == 'octave-mxe' %}
+          {{ do_list(value) }}
+        {% elif key == 'unknown' %}
+          {{ value }}
+        {% else %}
+          {{ do_final_list(value) }}
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {%- endmacro %}
+    {{ do_list(build.files) }}
+    <ul class="buildlist">
+      <li>
+        <a target="_blank" href="{{config.data_url}}/{{build.id}}/">[List of all files]</a>
+      </li>
+    </ul>
+  </details>
   {% endfor %}
-  </ul>
 
   <br><br>
 
@@ -61,7 +79,7 @@
       hg id:
       <a href="https://www.mercurial-scm.org/wiki/ChangeSetID">Mercurial (hg) changeset</a>
       identification at
-      <a href="{{oct_repo_url}}">{{oct_repo_url}}</a>.
+      <a href="{{config.repo_url}}">{{config.repo_url}}</a>.
     </li>
   </ul>
 </div>
