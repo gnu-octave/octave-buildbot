@@ -42,7 +42,7 @@
       {% if key == 'html' %}
         {% set value = value + '/' %}
       {% endif %}
-        <a href="{{config.data_url}}/{{build.id}}/{{value}}">[{{key}}]</a>
+        <a target="_blank" href="{{config.data_url}}/{{build.id}}/{{value}}">[{{key}}]</a>
       {% endfor %}
     {% endfor %}
     {%- endmacro %}
