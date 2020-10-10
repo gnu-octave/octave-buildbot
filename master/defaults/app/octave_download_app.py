@@ -18,8 +18,9 @@ def getBuildBotData():
       item["properties"] = octavedownloadapp.buildbot_api.dataGet(
         ("builds", item["buildid"], "properties"))
       item["results_text"] = statusToString(item["results"])
-      builds_by_id.setdefault(item["properties"]["OCTAVE_HG_ID"][0],
-                              []).append(item)
+      if "OCTAVE_HG_ID" in item["properties"].keys():
+        builds_by_id.setdefault(item["properties"]["OCTAVE_HG_ID"][0],
+                                []).append(item)
     return builds_by_id
 
 def fmtDate(e):
