@@ -20,6 +20,27 @@
     padding: 1em;
     background-color: khaki;
   }
+  div.buildbot {
+    margin: 2em;
+  }
+  div.buildbot a {
+    color: blue;
+  }
+  div.buildbotentry {
+    border: 1px solid black;
+    padding: 5px;
+  }
+  .right {
+    float: right;
+  }
+  /* https://docs.buildbot.net/latest/developer/results.html#build-result-codes */
+  .color0 { background-color: #8d4;   } /* success */
+  .color1 { background-color: orange; } /* warning */
+  .color2 { background-color: #e88;   } /* failure */
+  .color3 { background-color: white;  } /* skipped */
+  .color4 { background-color: purple; } /* exception */
+  .color5 { background-color: purple; } /* retry */
+  .color6 { background-color: #ecc;   } /* cancelled */
   </style>
   <div class="logo">
     <img src="{{url_for('static', filename='octave.space.png')}}"
@@ -68,6 +89,14 @@
         <a target="_blank" href="{{config.data_url}}/{{build.id}}/">[List of all files]</a>
       </li>
     </ul>
+    <div class="buildbot">
+      {% for bb in build.builds %}
+      <div class="buildbotentry color{{bb.results}}">
+        <a href="/#/builders/{{bb.builderid}}/builds/{{bb.number}}">{{bb.properties.buildername[0]}}/{{bb.number}}</a>
+        <span class="right">{{bb.state_string}}</span>
+      </div>
+      {% endfor %}
+    </div>
   </details>
   {% endfor %}
 
@@ -81,5 +110,12 @@
       identification at
       <a href="{{config.repo_url}}">{{config.repo_url}}</a>.
     </li>
+    <li>
+      Buildbot sources at
+      <a href="https://github.com/gnu-octave/octave-buildbot/">https://github.com/gnu-octave/octave-buildbot/</a>.
+    </li>
   </ul>
+
+  <br><br>
+
 </div>

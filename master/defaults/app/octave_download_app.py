@@ -2,7 +2,6 @@
 
 import os
 import time
-import pprint
 
 from collections import defaultdict
 
@@ -10,6 +9,18 @@ from flask import Flask
 from flask import render_template
 
 from buildbot.process.results import statusToString
+
+def getBuildBotData():
+    """Fetches build data from the data api"""
+    builds = octavedownloadapp.buildbot_api.dataGet("/builds", limit=100)
+    builds_by_id = {}
+    for item in builds:
+      item["properties"] = octavedownloadapp.buildbot_api.dataGet(
+        ("builds", item["buildid"], "properties"))
+      item["results_text"] = statusToString(item["results"])
+      builds_by_id.setdefault(item["properties"]["OCTAVE_HG_ID"][0],
+                              []).append(item)
+    return builds_by_id
 
 def fmtDate(e):
     """Format epoch to string."""
@@ -67,6 +78,8 @@ def main():
   # URL-prefix to changes in the repository from which Octave is built.
   config["repo_change_url"] = config["repo_url"] + "/rev"
 
+  buildbot_data = getBuildBotData()
+
   # Create directory list with file and metadata.
   builds = []
   if os.path.isdir(config["stable_dir"]):
@@ -80,27 +93,21 @@ def main():
             version = files["octave"]["tar.gz"][0][7:-7]  # octave-VERSION.tar.gz
           except:
             version = "unknown"
+          try:
+            build_data = buildbot_data[entry.name]
+          except:
+            build_data = []
           builds.append({
             "id": entry.name,
             "version": version,
             "sort": entry_ctime,
             "date": fmtDate(entry_ctime),
-            "files": files
+            "files": files,
+            "builds": build_data
           })
 
   # Order by newest build first.
   builds = sorted(builds, key = lambda i: i["sort"], reverse=True)
-
-  # This code fetches build data from the data api, and gives it to the
-  # template.
-  #builders = octavedownloadapp.buildbot_api.dataGet("/builders")
-  #builds   = octavedownloadapp.buildbot_api.dataGet("/builds", limit=20)
-  # Properties are actually not used in the template example, but this is
-  # how you get more properties
-  #for build in builds:
-  #    build['properties'] = octavedownloadapp.buildbot_api.dataGet(
-  #      ("builds", build['buildid'], "properties"))
-  #    build['results_text'] = statusToString(build['results'])
 
   return render_template("octave_download_app.html",
                          builds = builds,
