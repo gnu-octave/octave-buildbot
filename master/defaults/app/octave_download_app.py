@@ -12,7 +12,9 @@ from buildbot.process.results import statusToString
 
 def getBuildBotData():
     """Fetches build data from the data api"""
-    builds = octavedownloadapp.buildbot_api.dataGet("/builds", limit=100)
+    builds = octavedownloadapp.buildbot_api.dataGet("/builds",
+                                                    order=["-started_at"],
+                                                    limit=100)
     builds_by_id = {}
     for item in builds:
       item["properties"] = octavedownloadapp.buildbot_api.dataGet(
@@ -25,38 +27,60 @@ def getBuildBotData():
 
 def fmtDate(e):
     """Format epoch to string."""
-    return time.strftime("%a, %Y %b %d %H:%M:%S %z", time.gmtime(e))
+    return time.strftime("%a, %b %d, %Y", time.gmtime(e))
+
+def fmtSize(byte):
+    if byte >= 2**20:
+      byte //= 2**20
+      suffix = "MB"
+    elif byte >= 2**10:
+      byte //= 2**10
+      suffix = "KB"
+    else:
+      suffix = "B"
+    return f'{byte} {suffix}'
+
+def getFileData(path):
+    """Make list of dict from list of valid path."""
+    files = []
+    for f in os.listdir(path):
+      files.append({
+        "name": f,
+        "size": fmtSize(os.path.getsize(path + '/' + f))
+        })
+    return files
 
 def categorizeFiles(files):
-    """Categorize list of filenames."""
+    """Categorize list of valid file dict {"name", "size"}."""
     nested_dict = lambda: defaultdict(nested_dict)
     files_sorted = nested_dict()
     for f in files:
-      _, ext = os.path.splitext(f)
+      filename = f["name"]
+      _, ext = os.path.splitext(filename)
       ext = ext[1:]
-      if "doxyhtml.zip" in f:
+      if "doxyhtml.zip" in filename:
         files_sorted["doxygen"].setdefault(ext, []).append(f)
-      elif "doxyhtml" in f:
+      elif "doxyhtml" in filename:
         files_sorted["doxygen"].setdefault("html", []).append(f)
-      elif "interpreter.zip" in f:
+      elif "interpreter.zip" in filename:
         files_sorted["manual"].setdefault(ext, []).append(f)
-      elif "octave.html" in f:
+      elif "octave.html" in filename:
         files_sorted["manual"].setdefault(ext, []).append(f)
-      elif "octave.pdf" in f:
+      elif "octave.pdf" in filename:
         files_sorted["manual"].setdefault(ext, []).append(f)
-      elif "-w32" in f and "log-" in f:
+      elif "-w32" in filename and "log-" in filename:
         files_sorted["octave-mxe"]["w32"].setdefault("log", []).append(f)
-      elif "-w64-64" in f and "log-" in f:
+      elif "-w64-64" in filename and "log-" in filename:
         files_sorted["octave-mxe"]["w64-64"].setdefault("log", []).append(f)
-      elif "-w64" in f and "log-" in f:
+      elif "-w64" in filename and "log-" in filename:
         files_sorted["octave-mxe"]["w64"].setdefault("log", []).append(f)
-      elif "-w32" in f:
+      elif "-w32" in filename:
         files_sorted["octave-mxe"]["w32"].setdefault(ext, []).append(f)
-      elif "-w64-64" in f:
+      elif "-w64-64" in filename:
         files_sorted["octave-mxe"]["w64-64"].setdefault(ext, []).append(f)
-      elif "-w64" in f:
+      elif "-w64" in filename:
         files_sorted["octave-mxe"]["w64"].setdefault(ext, []).append(f)
-      elif "octave-" in f and ".tar." in f:
+      elif "octave-" in filename and ".tar." in filename:
         files_sorted["octave"].setdefault('tar.' + ext, []).append(f)
       else:
         files_sorted.setdefault("unknown", []).append(f)
@@ -88,15 +112,15 @@ def main():
       for entry in entries:
         if entry.is_dir():
           entry_ctime = os.path.getctime(entry)
-          files = categorizeFiles(os.listdir(config["stable_dir"] + '/' +
-                                             entry.name))
+          files = categorizeFiles(getFileData(entry.path))
           try:
-            version = files["octave"]["tar.gz"][0][7:-7]  # octave-VERSION.tar.gz
+            # octave-VERSION.tar.gz
+            version = files["octave"]["tar.gz"][0]["name"][7:-7]
           except:
             version = "unknown"
-          try:
+          if entry.name in buildbot_data.keys():
             build_data = buildbot_data[entry.name]
-          except:
+          else:
             build_data = []
           builds.append({
             "id": entry.name,
