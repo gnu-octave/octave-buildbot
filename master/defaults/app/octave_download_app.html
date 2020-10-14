@@ -9,6 +9,9 @@
     margin-right: auto;
     width: 200px
   }
+  ul.buildlist ul {
+    padding-inline-start: 1em;
+  }
   ul.buildlist li {
     margin: 1em;
   }
@@ -35,8 +38,6 @@
   div.buildbot td {
     padding: 5px;
     border: 1px solid black;
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
   div.buildbot td.left {
@@ -45,6 +46,9 @@
   div.buildbot td.right {
     border-left: 0;
     text-align: right;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 1px;
   }
   /* https://docs.buildbot.net/latest/developer/results.html#build-result-codes */
   .color0 { background-color: #8d4; } /* success */
@@ -121,16 +125,20 @@
     </ul>
     <div class="buildbot">
       <table>
-      {% for bb in build.builds %}
-      <tr>
-        <td class="left color{{bb.results}}">
-          <a href="/#/builders/{{bb.builderid}}/builds/{{bb.number}}">{{bb.properties.buildername[0]}}/{{bb.number}}</a>
-        </td>
-        <td class="right color{{bb.results}}">
-          <span>{{bb.state_string}}</span>
-        </td>
-      </tr>
-      {% endfor %}
+        <colgroup>
+          <col width="0%">
+          <col width="100%">
+        </colgroup>
+        {% for bb in build.builds %}
+        <tr>
+          <td class="left color{{bb.results}}">
+            <a href="/#/builders/{{bb.builderid}}/builds/{{bb.number}}">{{bb.properties.buildername[0]}}/{{bb.number}}</a>
+          </td>
+          <td class="right color{{bb.results}}">
+            <span>{{bb.state_string}}</span>
+          </td>
+        </tr>
+        {% endfor %}
       </table>
     </div>
   </details>
