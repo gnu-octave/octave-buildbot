@@ -131,6 +131,7 @@ RUN ARPACK_NG_VERSION=3.7.0 && \
     make -j8                    && \
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib  && \
     make check    && \
+    cat TESTS/test-suite.log  && \
     make install  && \
     rm -rf /tmp/build
 
