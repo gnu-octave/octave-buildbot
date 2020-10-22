@@ -116,7 +116,7 @@ RUN apt-get --yes update  && \
 RUN ARPACK_NG_VERSION=3.7.0 && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
-    wget "https://github.com/opencollab/arpack-ng/archive/${ARPACK_NG_VERSION}.tar.gz" && \
+    wget -q "https://github.com/opencollab/arpack-ng/archive/${ARPACK_NG_VERSION}.tar.gz" && \
     tar -xf      ${ARPACK_NG_VERSION}.tar.gz  && \
     cd arpack-ng-${ARPACK_NG_VERSION}         && \
     ./bootstrap                 && \
@@ -125,13 +125,8 @@ RUN ARPACK_NG_VERSION=3.7.0 && \
       --libdir=/usr/lib            \
       --with-blas='-lopenblas'     \
       --with-lapack=''             \
-      INTERFACE64=1                \
-      LT_SYS_LIBRARY_PATH=/usr/lib \
-      LDFLAGS='-L/usr/lib'      && \
     make -j8                    && \
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib  && \
-    make check || true        && \
-    cat TESTS/test-suite.log  && \
+    make check    && \
     make install  && \
     rm -rf /tmp/build
 
