@@ -124,7 +124,7 @@ RUN ARPACK_NG_VERSION=3.7.0 && \
       --prefix=/usr                \
       --libdir=/usr/lib            \
       --with-blas='-lopenblas'     \
-      --with-lapack=''             \
+      --with-lapack=''          && \
     make -j8                    && \
     make check    && \
     make install  && \
