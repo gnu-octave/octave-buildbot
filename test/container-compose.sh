@@ -22,8 +22,6 @@ function recreate_and_start_buildbot {
       gnuoctave/buildbot:latest-master
 
     ${CONTAINER_CMD} create \
-      --env NGINX_HOST=localhost \
-      --env NGINX_PORT=80 \
       --publish 8000:80 \
       --volume octave-buildbot-master-data:/usr/share/nginx/html/buildbot/data:z${EXEC_FLAG} \
       --volume $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro \
