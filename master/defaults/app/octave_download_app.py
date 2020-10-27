@@ -94,21 +94,21 @@ octavedownloadapp = Flask(__name__,
 @octavedownloadapp.route("/index.html")
 def main():
   config = {}
-  # Absolute directory, where stable Octave builds are stored on the master.
-  config["stable_dir"] = "/buildbot/data/stable"
-  # URL, where stable Octave builds are visible to the public.
-  config["data_url"] = octavedownloadapp.config["DATA_DIR_URL"] + "/data/stable"
+  # Absolute directory, where Octave builds are stored on the master.
+  config["data_dir"] = octavedownloadapp.config["DATA_DIR"]
+  # URL, where Octave builds are visible to the public.
+  config["data_url"] = octavedownloadapp.config["DATA_URL"]
   # Repository from which Octave is built.
   config["repo_url"] = octavedownloadapp.config["OCTAVE_HG_REPO_URL"]
   # URL-prefix to changes in the repository from which Octave is built.
-  config["repo_change_url"] = config["repo_url"] + "/rev"
+  config["repo_change_url"] = octavedownloadapp.config["OCTAVE_HG_REPO_CHANGE_URL"]
 
   buildbot_data = getBuildBotData()
 
   # Create directory list with file and metadata.
   builds = []
-  if os.path.isdir(config["stable_dir"]):
-    with os.scandir(config["stable_dir"]) as entries:
+  if os.path.isdir(config["data_dir"]):
+    with os.scandir(config["data_dir"]) as entries:
       for entry in entries:
         if entry.is_dir():
           entry_ctime = os.path.getctime(entry)
