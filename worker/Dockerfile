@@ -12,7 +12,7 @@
 FROM        ubuntu:18.04
 MAINTAINER  Siko1056
 
-ENV LAST_UPDATED=2020-10-01
+ENV LAST_UPDATED=2020-11-01
 
 # Install security updates and required packages.
 
