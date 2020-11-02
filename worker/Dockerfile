@@ -40,6 +40,7 @@ RUN apt-get --yes update  && \
       gzip \
       icoutils \
       less \
+      libarpack2-dev \
       libblas-dev \
       libcurl4-gnutls-dev \
       liblapack-dev \
@@ -109,26 +110,6 @@ RUN apt-get --yes update  && \
     # Install required python packages
     pip3 install --upgrade --no-cache-dir \
       'twisted[tls]' 'buildbot[bundle]' virtualenv
-
-
-# Install ARPACK NG
-
-RUN ARPACK_NG_VERSION=3.7.0 && \
-    mkdir -p /tmp/build     && \
-    cd       /tmp/build     && \
-    wget -q "https://github.com/opencollab/arpack-ng/archive/${ARPACK_NG_VERSION}.tar.gz" && \
-    tar -xf      ${ARPACK_NG_VERSION}.tar.gz  && \
-    cd arpack-ng-${ARPACK_NG_VERSION}         && \
-    ./bootstrap                 && \
-    ./configure                    \
-      --prefix=/usr                \
-      --libdir=/usr/lib            \
-      --with-blas='-lopenblas'     \
-      --with-lapack=''          && \
-    make -j8                    && \
-    make check    && \
-    make install  && \
-    rm -rf /tmp/build
 
 
 # Install Sundials
