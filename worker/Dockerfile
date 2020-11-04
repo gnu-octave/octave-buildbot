@@ -87,6 +87,7 @@ RUN apt-get --yes update  && \
       qtbase5-dev \
       qttools5-dev \
       qttools5-dev-tools \
+      rsync \
       subversion \
       tar \
       texinfo \

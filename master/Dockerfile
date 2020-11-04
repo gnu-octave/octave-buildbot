@@ -29,6 +29,7 @@ RUN apt-get --yes update  && \
       python3-dev \
       python3-pip \
       python3-setuptools \
+      rsync \
       subversion \
       unzip \
       zip \
