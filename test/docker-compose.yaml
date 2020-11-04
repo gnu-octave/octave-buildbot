@@ -9,7 +9,11 @@ services:
         protocol: tcp
         mode: host
       - target: 9989
-        published: 9989  # Buildbot worker
+        published: 9989  # Buildbot worker communication
+        protocol: tcp
+        mode: host
+      - target: 22
+        published: 9988  # Buildbot worker rsync file transfer
         protocol: tcp
         mode: host
     volumes:
@@ -20,7 +24,7 @@ services:
         source: master_data
         target: /buildbot/data
 
-  worker:
+  buildbot-worker:
     image: gnuoctave/buildbot:latest-worker
     environment:
       - BUILDMASTER=localhost

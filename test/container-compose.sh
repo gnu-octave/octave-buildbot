@@ -16,6 +16,7 @@ function recreate_and_start_buildbot {
     ${CONTAINER_CMD} create \
       --publish 8010:8010 \
       --publish 9989:9989 \
+      --publish 9988:22 \
       --volume octave-buildbot-master:/buildbot/master:Z${EXEC_FLAG} \
       --volume octave-buildbot-master-data:/buildbot/data:z${EXEC_FLAG} \
       --name   octave-buildbot-master \
