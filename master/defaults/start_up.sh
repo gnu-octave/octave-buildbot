@@ -46,6 +46,9 @@ do
   sleep 1
 done
 
+# Start SSH server for rsync file transfers.
+/etc/init.d/ssh start
+
 cd $BUILDBOT_DIR
 
 # exec is used here so that twistd use the pid 1 of the container, and so that
