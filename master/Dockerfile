@@ -25,6 +25,7 @@ RUN apt-get --yes update  && \
       libffi-dev \
       libssl-dev \
       mercurial \
+      openssh-server \
       p7zip \
       python3-dev \
       python3-pip \
