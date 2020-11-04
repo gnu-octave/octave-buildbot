@@ -153,7 +153,8 @@ RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
 
 # Prepare worker directory
 
-RUN mkdir /buildbot
+RUN mkdir /buildbot && \
+    mkdir /root/.ssh
 
 COPY worker/buildbot.tac /buildbot/buildbot.tac
 

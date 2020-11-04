@@ -50,7 +50,8 @@ RUN apt-get --yes update  && \
 
 # Prepare master directory
 
-RUN mkdir /buildbot
+RUN mkdir /buildbot && \
+    mkdir /root/.ssh
 
 COPY master/defaults/start_up.sh /buildbot/defaults/start_up.sh
 COPY master/defaults/tidy_up.sh  /buildbot/defaults/tidy_up.sh
