@@ -56,6 +56,12 @@ all Buildbot Workers in it.  Finally copy this file in the container
 Note, that the owner of this file inside the container must be "root" and it
 may not be too permissive (`chmod 600`).
 
+> **Note:** To use this Buildbot system without `rsync` and SSH keys,
+> go back to an
+> [older version of `master.cfg`](https://github.com/gnu-octave/octave-buildbot/blob/9dd6369e7962a1422ea44407bc8416f894a09790/master/defaults/master.cfg).
+> But note that Buildbot's builtin
+> [`FileUpload` is very slow](https://github.com/gnu-octave/octave-buildbot/issues/5).
+
 ### 2. Start the container with default configuration
 
     docker start octave-buildbot-master
