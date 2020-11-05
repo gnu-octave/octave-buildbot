@@ -8,8 +8,8 @@ For minimal local setup of Buildbot Master and Worker, see the
 
 ## Docker Image
 
-Here is the list of configuration variables for the "octave-buildbot-worker"
-image:
+The following configuration (environment) variables are available for the
+"octave-buildbot-worker" image:
 
 - `BUILDMASTER` (default: `localhost`): The DNS or IP address of the master to
   connect to.
@@ -25,36 +25,29 @@ image:
 
 ## Start the Buildbot Worker
 
-### 1. Create an environment file
+### 1. Pull the image and create a container from it
 
-Create a file `worker01.env` with the configuration variables above.
-All values must be communicated with the administrator of the Buildbot Master,
-here `octave.space`.
-
-```
-BUILDMASTER=octave.space
-BUILDMASTER_PORT=9989
-WORKERNAME=worker01
-WORKERPASS=secret_password
-```
-
-### 2. Pull the image and create a container from it
+The values of the environment variables (described above) must be communicated
+with the administrator of the Buildbot Master, here `octave.space`.
 
     docker pull gnuoctave/buildbot:latest-worker
 
     docker create \
-      --env-file /path/to/worker01.env \
+      --env BUILDMASTER=octave.space \
+      --env BUILDMASTER_PORT=9989 \
+      --env WORKERNAME=worker01 \
+      --env WORKERPASS=secret_password \
       --volume octave-buildbot-worker:/buildbot:Z \
       --name   octave-buildbot-worker \
       gnuoctave/buildbot:latest-worker
 
-In the example above the name of the container is arbitrary.
+In the example above the name of the container and Docker volume is arbitrary.
 
 Mounting a Docker volume is not required, but strongly suggested:
 - Keep repository data and downloaded installer files when the container is
   destroyed or replaced.  This avoids heavy internet usage and build failures
   due to unresponsive servers.
-- More control over the storage location.  A worker can easily use up to 50 GB
+- More control over the storage location.  A worker can easily use up to 70 GB
   of storage.
 - The [mount option `Z`](https://docs.docker.com/storage/bind-mounts/#configure-the-selinux-label)
   is necessary, if
@@ -64,48 +57,42 @@ Mounting a Docker volume is not required, but strongly suggested:
   [`exec`](https://docs.podman.io/en/latest/markdown/podman-create.1.html)
   flag should be additionally set
   `--volume octave-buildbot-worker:/buildbot:Z,exec`.
+
 Multiple Buildbot Workers **cannot** share the same Docker volume.
+
+### 2. Create a SSH-key
+
+The build artifacts are copied to the Buildbot Master via `rsync` (SSH).
+To enable public key authentication, a pair of private and public key (without
+password) must be created.  The following command creates a private key
+`id_rsa` and a public key `id_rsa.pub` in the current directory:
+
+    ssh-keygen -q -P "" -f "./id_rsa"
+
+Copy the private key into the Buildbot Worker container:
+
+    docker cp ./id_rsa octave-buildbot-worker:/root/.ssh/id_rsa
+
+and send the public key `id_rsa.pub` to the administrator of the Buildbot
+Master.
 
 ### 3. Start the container
 
     docker start octave-buildbot-worker
 
-### 4. Optional: Use ccache
+### 4. Optional: Configure ccache
 
+By default ccache is enabled and the default values are:
+
+- `--env CCACHE_MAXSIZE=10G`: Allow usage of 10 GB of disk space.
+- `--env CCACHE_DIR=/buildbot/.ccache`: The cached compiler outputs are stored
+  in this directory.  This storage location is in a Docker volume, as described
+  above.
+
+To disable ccache use `--env CCACHE_DISABLE=1` for the container creation.
 All settings mentioned
 [in the ccache manual](https://ccache.dev/manual/3.7.11.html#_configuration)
-can be passed as environment variables to the container:
-
-- `CCACHE_DISABLE=1` (default, to disable the usage of ccache) or
-  `CCACHE_NODISABLE=1` (to enable the usage of ccache).  If none of the two
-  settings is given, `CCACHE_DISABLE=1` will be set.
-- `CCACHE_MAXSIZE` (default: `10G`): If ccache is enabled, allow usage of
-  10 GB of disk space.
-- `CCACHE_DIR` (default: `/buildbot/.ccache`): If ccache is enabled, the cached
-  compiler outputs are stored there.  This storage location is in a Docker
-  volume, as described above.
-
-### 5. Optional: Make Buildbot worker a systemd service
-
-If your system uses [systemd](https://systemd.io/), you can create as user
-`root` the file `/etc/systemd/system/buildbot-worker.service`:
-
-```
-[Unit]
-Description=BuildBot worker service
-
-[Service]
-Restart=always
-ExecStart=/usr/bin/docker start -a octave-buildbot-worker
-ExecStop=/usr/bin/docker stop -t 2 octave-buildbot-worker
-
-[Install]
-WantedBy=local.target
-```
-and enable and start the service automatically with your system.
-
-    systemctl start  buildbot-worker.service
-    systemctl enable buildbot-worker.service
+can be passed as environment variables for the container creation.
 
 ## More information
 

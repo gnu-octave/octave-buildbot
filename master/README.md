@@ -21,15 +21,18 @@ information read https://docs.buildbot.net/latest/index.html
     docker create \
       --publish 8010:8010 \
       --publish 9989:9989 \
+      --publish 9988:22 \
       --volume octave-buildbot-master:/buildbot/master:Z \
+      --volume octave-buildbot-master-data:/buildbot/data:z \
       --name octave-buildbot-master \
       gnuoctave/buildbot:latest-master
 
-In the example above the name of the container is arbitrary.  Port 8010 is used
-for the web interface and port 9989 for the worker communication.  The port
-values must agree with `master.cfg`.
+In the example above the name of the container and the volumes are arbitrary.
+Port 8010 is used for the web interface, port 9989 for the worker communication,
+and port 9988 for `rsync` file transfers.  The port values must agree with
+the `master.cfg` file.
 
-Mounting a Docker volume is not required, but strongly suggested:
+Mounting Docker volumes is not required, but strongly suggested:
 - Maintain the state and configuration (`master.cfg`) of the Buildbot Master,
   if the container is destroyed or recreated from the image.
 - The [mount option `Z`](https://docs.docker.com/storage/bind-mounts/#configure-the-selinux-label)
@@ -40,7 +43,18 @@ Mounting a Docker volume is not required, but strongly suggested:
   [`exec`](https://docs.podman.io/en/latest/markdown/podman-create.1.html)
   flag should be additionally set
   `--volume octave-buildbot-master:/buildbot/master:Z,exec`.
-Multiple Buildbot Masters **cannot** share the same Docker volume.
+
+Multiple Buildbot Masters **cannot** share the same Docker volumes.
+
+### 2. Collect all Worker's public SSH keys
+
+Create a file `authorized_keys` and copy the public SSH keys (`id_rsa.pub`) of
+all Buildbot Workers in it.  Finally copy this file in the container
+
+    docker cp ./authorized_keys octave-buildbot-master:/root/.ssh/authorized_keys
+
+Note, that the owner of this file inside the container must be "root" and it
+may not be too permissive (`chmod 600`).
 
 ### 2. Start the container with default configuration
 
@@ -64,41 +78,14 @@ container:
 
 In case of configuration errors, check `twistd.log` in the Docker volume.
 
-### 4. Configure a web space
+### 4. Configure a web server
 
-Depending on your needs, it can be useful to store the build results.
-If the Buildbot Master runs a webserver with a public `/var/www/web.site/data`
-directory, you can choose to store the build results in the container's
-`/buildbot/data` directory bound to `/var/www/web.site/data` using
-[file transfers](https://docs.buildbot.net/latest/manual/configuration/steps/file_transfer.html).
-This binding is realized with an additional container creation parameter in
-step 1:
+With the configuration of step 1, the build artifacts of the Buildbot Workers
+are stored inside the Docker volume `octave-buildbot-master-data`.  This data
+can be made publicly available via a web server.
 
-    docker create \
-      --mount type=bind,source=/var/www/web.site/data,target=/buildbot/data \
-      ...
-
-### 5. Optional: Make Buildbot master a systemd service
-
-If your system uses [systemd](https://systemd.io/), you can create as user
-`root` the file `/etc/systemd/system/buildbot-master.service`:
-
-```
-[Unit]
-Description=BuildBot master service
-
-[Service]
-Restart=always
-ExecStart=/usr/bin/docker start -a octave-buildbot-master
-ExecStop=/usr/bin/docker stop -t 2 octave-buildbot-master
-
-[Install]
-WantedBy=local.target
-```
-and enable and start the service automatically with your system.
-
-    systemctl start  buildbot-master.service
-    systemctl enable buildbot-master.service
+For minimal local setup of Buildbot Master, Worker, and Nginx web server see the
+["test" subdirectory](https://github.com/gnu-octave/octave-buildbot/tree/master/test).
 
 ## More information
 
