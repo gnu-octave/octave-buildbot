@@ -5,12 +5,12 @@
 # Please follow docker best practices
 # https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/
 
-# Provides a base Ubuntu image with latest buildbot master installed.
-# The master image is not optimized for size, but rather uses Ubuntu for wider
+# Provides a base Ubuntu image with latest Buildbot Master installed.
+# The Master image is not optimized for size, but rather uses Ubuntu for wider
 # package availability.
 
-FROM        ubuntu:18.04
-MAINTAINER  Siko1056
+FROM  ubuntu:18.04
+LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
 ENV LAST_UPDATED=2020-11-01
 
