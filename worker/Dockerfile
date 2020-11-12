@@ -57,7 +57,6 @@ RUN apt-get --yes update  && \
       libgpgme11-dev \
       libgraphicsmagick++1-dev \
       libhdf5-serial-dev \
-      libopenblas-dev \
       libosmesa6-dev \
       libqhull-dev \
       libqrupdate-dev \
