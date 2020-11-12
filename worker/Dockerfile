@@ -9,7 +9,7 @@
 # The worker image is not optimized for size, but rather uses Ubuntu for wider
 # package availability.
 
-FROM  gnuoctave/octave:build-octave-6
+FROM  ubuntu:18.04
 LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
 ENV LAST_UPDATED=2020-11-01
