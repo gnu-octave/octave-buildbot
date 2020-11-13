@@ -147,7 +147,7 @@ RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
     ln -s /usr/bin/ccache /usr/local/bin/c++ && \
     ln -s /usr/bin/ccache /usr/local/bin/cc  && \
     mkdir -p /root/.ccache                   && \
-    echo "max_size = 10.0G\ncache_dir = /buildbot/.ccache" \
+    echo "max_size = 10.0G\ncache_dir = /buildbot/.ccache\ncompiler_check = %compiler% -v" \
       > /root/.ccache/ccache.conf
 
 # Prepare worker directory
