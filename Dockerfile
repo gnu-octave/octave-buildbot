@@ -26,7 +26,7 @@ RUN apt-get --yes update        && \
 
 # Prepare master directory
 
-RUN mkdir /buildbot/data
+RUN mkdir -p /buildbot/data
 
 WORKDIR /buildbot
 
