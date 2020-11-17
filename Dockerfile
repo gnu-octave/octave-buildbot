@@ -26,8 +26,8 @@ RUN apt-get --yes update        && \
 
 # Prepare master directory
 
-RUN mkdir /data
+RUN mkdir /buildbot/data
 
-WORKDIR /data
+WORKDIR /buildbot
 
-CMD ["/etc/init.d/ssh", "start"]
+CMD ["/usr/sbin/sshd", "-D", "-e", "-p", "22"]
