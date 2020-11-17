@@ -57,6 +57,7 @@ COPY master/defaults/start_up.sh /buildbot/defaults/start_up.sh
 COPY master/defaults/tidy_up.sh  /buildbot/defaults/tidy_up.sh
 COPY master/defaults/master.cfg  /buildbot/defaults/master.cfg
 COPY master/defaults/app/*       /buildbot/defaults/app/
+COPY master/defaults/sshd_config /etc/ssh/sshd_config
 
 WORKDIR /buildbot
 
