@@ -44,9 +44,9 @@ RUN apt-get --yes update  && \
     rm -Rf /var/lib/apt/lists/* && \
     rm -Rf /usr/share/doc       && \
     # Install required python packages
+    pip3 install --upgrade --no-cache-dir pip && \
     pip3 install --upgrade --no-cache-dir \
-      pip virtualenv Flask \
-      'twisted[tls]' 'buildbot[bundle]' \
+      'twisted[tls]' 'buildbot[bundle]' virtualenv Flask \
       buildbot-profiler buildbot-wsgi-dashboards
 
 # Prepare master directory

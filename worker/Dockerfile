@@ -108,6 +108,7 @@ RUN apt-get --yes update  && \
     rm -Rf /var/lib/apt/lists/* && \
     rm -Rf /usr/share/doc       && \
     # Install required python packages
+    pip3 install --upgrade --no-cache-dir pip && \
     pip3 install --upgrade --no-cache-dir \
       'twisted[tls]' 'buildbot[bundle]' virtualenv
 
