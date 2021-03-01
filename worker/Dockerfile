@@ -114,8 +114,10 @@ RUN apt-get --yes update  && \
 
 
 # Install Sundials
+# FIXME: Version 5.4.0 is the last one supporting the native Ubuntu 18.04
+#        cmake version =(
 
-RUN SUNDIALS_VERSION=5.7.0  && \
+RUN SUNDIALS_VERSION=5.4.0  && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
     wget -q "https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz" && \
