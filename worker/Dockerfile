@@ -115,7 +115,7 @@ RUN apt-get --yes update  && \
 
 # Install Sundials
 
-RUN SUNDIALS_VERSION=5.4.0  && \
+RUN SUNDIALS_VERSION=5.7.0  && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
     wget -q "https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz" && \
