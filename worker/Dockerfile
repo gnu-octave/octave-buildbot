@@ -120,7 +120,7 @@ RUN apt-get --yes update  && \
 RUN SUNDIALS_VERSION=5.4.0  && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
-    wget -q "https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz" && \
+    wget -q "https://github.com/LLNL/sundials/releases/download/v${SUNDIALS_VERSION}/sundials-${SUNDIALS_VERSION}.tar.gz" && \
     tar -xf sundials-${SUNDIALS_VERSION}.tar.gz  && \
     cd      sundials-${SUNDIALS_VERSION}         && \
     mkdir build  && \
