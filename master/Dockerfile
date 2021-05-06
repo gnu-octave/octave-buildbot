@@ -9,10 +9,10 @@
 # The Master image is not optimized for size, but rather uses Ubuntu for wider
 # package availability.
 
-FROM  ubuntu:18.04
+FROM  ubuntu:20.04
 LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
-ENV LAST_UPDATED=2021-04-01
+ENV LAST_UPDATED=2021-05-01
 
 # Install security updates and required packages.
 

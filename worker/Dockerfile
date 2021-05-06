@@ -9,16 +9,17 @@
 # The worker image is not optimized for size, but rather uses Ubuntu for wider
 # package availability.
 
-FROM  ubuntu:18.04
+FROM  ubuntu:20.04
 LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
-ENV LAST_UPDATED=2021-04-01
+ENV LAST_UPDATED=2021-05-01
 
 # Install security updates and required packages.
 
 RUN apt-get --yes update  && \
     apt-get --yes upgrade && \
-    apt-get --yes install \
+    DEBIAN_FRONTEND="noninteractive" \
+    apt-get --no-install-recommends --yes install \
       autoconf \
       automake \
       bison \
@@ -29,6 +30,7 @@ RUN apt-get --yes update  && \
       dbus \
       doxygen \
       epstool \
+      fig2dev \
       flex \
       g++ \
       gcc \
@@ -54,10 +56,13 @@ RUN apt-get --yes update  && \
       libgl2ps-dev \
       libglpk-dev \
       libgmp-dev \
-      libgpgme11-dev \
+      libgpgme-dev \
       libgraphicsmagick++1-dev \
-      libhdf5-serial-dev \
+      libhdf5-dev \
+      liblapack-dev \
+      libmpfr-dev \
       libosmesa6-dev \
+      libpcre3-dev \
       libqhull-dev \
       libqrupdate-dev \
       libqscintilla2-qt5-dev \
@@ -90,9 +95,7 @@ RUN apt-get --yes update  && \
       subversion \
       tar \
       texinfo \
-      texlive \
-      texlive-generic-recommended \
-      transfig \
+      texlive-latex-extra \
       unzip \
       wget \
       xvfb \
@@ -114,10 +117,8 @@ RUN apt-get --yes update  && \
 
 
 # Install Sundials
-# FIXME: Version 5.4.0 is the last one supporting the native Ubuntu 18.04
-#        cmake version =(
 
-RUN SUNDIALS_VERSION=5.4.0  && \
+RUN SUNDIALS_VERSION=5.7.0  && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
     wget -q "https://github.com/LLNL/sundials/releases/download/v${SUNDIALS_VERSION}/sundials-${SUNDIALS_VERSION}.tar.gz" && \
@@ -129,7 +130,7 @@ RUN SUNDIALS_VERSION=5.4.0  && \
       -DEXAMPLES_ENABLE_C=OFF                      \
       -DKLU_ENABLE=ON                              \
       -DKLU_INCLUDE_DIR=/usr/include/suitesparse   \
-      -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu  \
+      -DKLU_LIBRARY_DIR=/usr/lib                   \
       -DBUILD_ARKODE=OFF                           \
       -DBUILD_CVODE=OFF                            \
       -DBUILD_CVODES=OFF                           \
