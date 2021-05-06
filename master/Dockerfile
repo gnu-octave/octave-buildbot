@@ -18,7 +18,8 @@ ENV LAST_UPDATED=2021-05-01
 
 RUN apt-get --yes update  && \
     apt-get --yes upgrade && \
-    apt-get --yes install \
+    DEBIAN_FRONTEND="noninteractive" \
+    apt-get --no-install-recommends --yes install \
       build-essential \
       curl \
       git \
