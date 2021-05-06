@@ -129,6 +129,8 @@ RUN SUNDIALS_VERSION=5.7.0  && \
     cmake                                          \
       -DEXAMPLES_ENABLE_C=OFF                      \
       -DENABLE_KLU=ON                              \
+      -DKLU_INCLUDE_DIR=/usr/include/suitesparse   \
+      -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu  \
       -DBUILD_ARKODE=OFF                           \
       -DBUILD_CVODE=OFF                            \
       -DBUILD_CVODES=OFF                           \
