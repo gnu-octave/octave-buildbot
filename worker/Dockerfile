@@ -80,6 +80,7 @@ RUN apt-get --yes update  && \
       make \
       mercurial \
       openjdk-11-jdk \
+      openssh-client \
       p7zip \
       perl \
       pkg-config \
