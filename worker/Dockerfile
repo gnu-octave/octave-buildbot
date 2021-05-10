@@ -158,6 +158,8 @@ RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
 
 # Prepare worker directory
 
+ENV XDG_RUNTIME_DIR=/tmp/runtime-dir
+
 RUN mkdir /buildbot && \
     mkdir /root/.ssh
 
