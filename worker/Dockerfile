@@ -97,6 +97,7 @@ RUN apt-get --yes update  && \
       tar \
       texinfo \
       texlive-latex-extra \
+      texlive-plain-generic \
       unzip \
       wget \
       xvfb \
