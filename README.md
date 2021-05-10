@@ -1,6 +1,6 @@
 # octave-buildbot
 
-> https://hub.docker.com/repository/docker/gnuoctave/buildbot
+> https://hub.docker.com/r/gnuoctave/buildbot
 
 Docker images for a Buildbot Master and Worker to manage
 [GNU Octave](https://www.octave.org) builds.
