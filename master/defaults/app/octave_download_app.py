@@ -72,12 +72,16 @@ def categorizeFiles(files):
         files_sorted["octave-mxe"]["w32"].setdefault("log", []).append(f)
       elif "-w64-64" in filename and "log-" in filename:
         files_sorted["octave-mxe"]["w64-64"].setdefault("log", []).append(f)
+      elif "-default-w64" in filename and "log-" in filename:
+        files_sorted["octave-mxe"]["mxe-default"].setdefault("log", []).append(f)
       elif "-w64" in filename and "log-" in filename:
         files_sorted["octave-mxe"]["w64"].setdefault("log", []).append(f)
       elif "-w32" in filename:
         files_sorted["octave-mxe"]["w32"].setdefault(ext, []).append(f)
       elif "-w64-64" in filename:
         files_sorted["octave-mxe"]["w64-64"].setdefault(ext, []).append(f)
+      elif "-default-w64" in filename:
+        files_sorted["octave-mxe"]["mxe-default"].setdefault(ext, []).append(f)
       elif "-w64" in filename:
         files_sorted["octave-mxe"]["w64"].setdefault(ext, []).append(f)
       elif "octave-" in filename and ".tar." in filename:
