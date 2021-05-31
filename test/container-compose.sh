@@ -19,6 +19,9 @@ function recreate_and_start_buildbot {
       --publish 9988:22 \
       --volume octave-buildbot-master:/buildbot/master:Z${EXEC_FLAG} \
       --volume octave-buildbot-master-data:/buildbot/data:z${EXEC_FLAG} \
+      --volume $(pwd)/../master/defaults/master.cfg:/buildbot/master/master.cfg:ro \
+      --volume $(pwd)/../master/defaults/app/octave_download_app.py:/buildbot/master/app/octave_download_app.py:ro \
+      --volume $(pwd)/../master/defaults/app/octave_download_app.html:/buildbot/master/app/octave_download_app.html:ro \
       --name   octave-buildbot-master \
       gnuoctave/buildbot:latest-master
 
