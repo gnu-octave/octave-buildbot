@@ -4,12 +4,11 @@
 
 DEFAULT_DIR=/buildbot/defaults
 BUILDBOT_DIR=/buildbot/master
+STABLE_DIR=/buildbot/data/stable
 
 # Create directory structure if necessary.
-if [[ ! -d "$BUILDBOT_DIR" ]]
-then
-  mkdir -p $BUILDBOT_DIR
-fi
+mkdir -p $BUILDBOT_DIR
+mkdir -p $STABLE_DIR
 
 # Copy default Buildbot configuration if not exists.
 if [[ ! -f "$BUILDBOT_DIR/master.cfg" ]]
