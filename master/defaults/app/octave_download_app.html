@@ -74,9 +74,9 @@
   {% for build in builds %}
   <details class="buildlist"{% if loop.index == 1 %} open{% endif %}>
     <summary>
-      <b>Octave {{build.version}}</b>
+      <b>Octave {{build.builds[0].properties.OCTAVE_VERSION[0]}}</b>
       &nbsp;&nbsp;
-      (hg id: <a target="_blank" href="{{config.repo_change_url}}/{{build.id}}">{{build.id}}</a>)
+      (hg id: <a target="_blank" href="{{config.repo_change_url}}/{{build.builds[0].properties.OCTAVE_HG_ID[0]}}">{{build.builds[0].properties.OCTAVE_HG_ID[0]}}</a>)
       &nbsp;&nbsp;
       {{build.date}}
     </summary>

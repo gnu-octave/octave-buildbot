@@ -20,8 +20,8 @@ def getBuildBotData():
       item["properties"] = octavedownloadapp.buildbot_api.dataGet(
         ("builds", item["buildid"], "properties"))
       item["results_text"] = statusToString(item["results"])
-      if "OCTAVE_HG_ID" in item["properties"].keys():
-        builds_by_id.setdefault(item["properties"]["OCTAVE_HG_ID"][0],
+      if "OCTAVE_BUILD_ID" in item["properties"].keys():
+        builds_by_id.setdefault(item["properties"]["OCTAVE_BUILD_ID"][0],
                                 []).append(item)
     return builds_by_id
 
@@ -115,23 +115,20 @@ def main():
     with os.scandir(config["data_dir"]) as entries:
       for entry in entries:
         if entry.is_dir():
-          entry_ctime = os.path.getctime(entry)
-          files = categorizeFiles(getFileData(entry.path))
-          try:
-            # octave-VERSION.tar.gz
-            version = files["octave"]["tar.gz"][0]["name"][7:-7]
-          except:
-            version = "unknown"
           if entry.name in buildbot_data.keys():
             build_data = buildbot_data[entry.name]
+            try:
+              entry_date = build_data[-1]["started_at"].timestamp()
+            except:
+              entry_date = os.path.getctime(entry)
           else:
             build_data = []
+            entry_date = os.path.getctime(entry)
           builds.append({
             "id": entry.name,
-            "version": version,
-            "sort": entry_ctime,
-            "date": fmtDate(entry_ctime),
-            "files": files,
+            "sort": entry_date,
+            "date": fmtDate(entry_date),
+            "files": categorizeFiles(getFileData(entry.path)),
             "builds": build_data
           })
 
