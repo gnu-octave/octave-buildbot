@@ -1,7 +1,7 @@
 name: "freshly brewed Octave"
 
 on:
-  push:
+  # push:
   workflow_dispatch:
   schedule:
     # Run job every day at 16:30 UTC
@@ -53,7 +53,7 @@ jobs:
 
       - name: download build
         id: download
-        if: ${{ steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid }}
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
         run: |
