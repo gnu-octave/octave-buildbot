@@ -38,7 +38,8 @@ jobs:
         with:
           path: oldid
           key: oldid:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
-
+          restore-keys: oldid
+ 
       - name: check build id
         id: check-id
         run: |
