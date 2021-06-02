@@ -19,6 +19,10 @@ jobs:
     strategy:
       fail-fast: false
 
+    env:
+      MSYSTEM: MSYS
+      CHERE_INVOKING: 1
+
     steps:
       - name: prepare cache
         # Create human readable timestamp
