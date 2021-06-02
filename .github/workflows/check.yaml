@@ -44,13 +44,15 @@ jobs:
         run: |
           BUILDID=$(curl -s "https://buildbot.octave.space/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
           echo "::set-output name=BUILDID::${BUILDID}"
+          echo buildid: "${BUILDID}"
           mkdir -p oldid
           test -f oldid/id && OLDBUILDID=$(cat oldid/id)
           echo "::set-output name=OLDBUILDID::${OLDBUILDID}"
+          echo oldbuildid: "${OLDBUILDID}"
 
       - name: download build
         id: download
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        if: ${{ steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid }}
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
         run: |
