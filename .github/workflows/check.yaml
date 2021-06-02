@@ -10,7 +10,9 @@ on:
 jobs:
   check:
     name: Windows test suite
+
     runs-on: windows-latest
+
     defaults:
       run:
         # Use pre-installed MSYS2 as default shell
