@@ -34,7 +34,7 @@ jobs:
 
       - name: setup cache
         id: setup-cache
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: oldid
           key: oldid:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
