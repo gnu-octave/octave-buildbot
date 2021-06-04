@@ -1,0 +1,97 @@
+name: "freshly brewed Octave"
+
+on:
+  # push:
+  workflow_dispatch:
+  schedule:
+    # Run job every day at 16:30 UTC
+    - cron: '30 16 * * *'
+
+jobs:
+  check:
+    name: Windows test suite
+
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        # Use pre-installed MSYS2 as default shell
+        shell: C:/msys64/usr/bin/bash.exe --login -eo pipefail "{0}"
+
+    strategy:
+      fail-fast: false
+
+    env:
+      MSYSTEM: MSYS
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: prepare cache
+        # Create human readable timestamp
+        id: cache_timestamp
+        run: |
+          echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
+
+      - name: setup cache
+        id: setup-cache
+        uses: actions/cache@v1
+        with:
+          path: oldid
+          key: oldid:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          restore-keys: oldid
+ 
+      - name: check build id
+        id: check-id
+        run: |
+          BUILDID=$(curl -s "https://buildbot.octave.space/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
+          echo "::set-output name=BUILDID::${BUILDID}"
+          echo buildid: "${BUILDID}"
+          mkdir -p oldid
+          test -f oldid/id && OLDBUILDID=$(cat oldid/id)
+          echo "::set-output name=OLDBUILDID::${OLDBUILDID}"
+          echo oldbuildid: "${OLDBUILDID}"
+
+      - name: download build
+        id: download
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          BUILDID: ${{ steps.check-id.outputs.buildid }}
+        run: |
+          wget --no-check-certificate -O index.html "https://www.octave.space/data/stable/${BUILDID}/"
+          FILE7Z=$(grep -r "\-default-w64.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-default-w64.7z" | head -n1 -)
+          wget --no-check-certificate -O octave-default-w64.7z "https://www.octave.space/data/stable/${BUILDID}/${FILE7Z}"
+          echo "::set-output name=FILE7Z::${FILE7Z}"
+
+      - name: unpack
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        shell: pwsh
+        run: 7z.exe x -y octave-default-w64.7z
+
+      - name: prepare
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+        run: |
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")w64
+          ./post-install.bat
+
+      - name: run test suite
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+        run: |
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")w64
+          ./mingw64/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
+
+      - name: display log
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+        run: |
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")w64
+          cat ./fntests.log
+
+      - name: save old build id
+        env:
+          BUILDID: ${{ steps.check-id.outputs.buildid }}
+        run: echo $BUILDID > oldid/id
