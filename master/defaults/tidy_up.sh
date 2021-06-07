@@ -14,7 +14,7 @@ cd $2
 echo "START tidy up"
 echo "--> ${THRESHOLD} MB threshold. "
 
-if [[ "$(du -sm | awk '{print $1;}')" > "${THRESHOLD}" ]]; then
+if [ "$(du -sm | awk '{print $1;}')" -gt "${THRESHOLD}" ]; then
   OLDEST_DIR=$(ls -tr | head -n 1)
   echo "--> $(du -sm | awk '{print $1;}') MB is too much, remove '${OLDEST_DIR}'!"
   rm -Rf ${OLDEST_DIR}
