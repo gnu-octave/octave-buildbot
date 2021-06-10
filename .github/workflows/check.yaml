@@ -100,6 +100,19 @@ jobs:
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./post-install.bat
 
+      - name: show hg ids
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
+          MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
+        run: |
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
+          echo MXE Octave hg id:
+          cat HG-ID
+          echo Octave hg id:
+          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval "fprintf ('%s', version ('hg_id'))"
+
       - name: run test suite
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
@@ -107,7 +120,6 @@ jobs:
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
           MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         run: |
-          echo MY_MINGW_PREFIX: ${MY_MINGW_PREFIX}
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
 
