@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [w64-default, w64]
+        target: [w64-default, w64, w64-64, w32]
         include:
           - target: w64-default
             file-suffix: default-w64
@@ -29,6 +29,12 @@ jobs:
           - target: w64
             file-suffix: w64
             folder-suffix: w64
+          - target: w64-64
+            file-suffix: w64-64
+            folder-suffix: w64-64
+          - target: w32
+            file-suffix: w32
+            folder-suffix: w32
 
     env:
       MSYSTEM: MSYS
