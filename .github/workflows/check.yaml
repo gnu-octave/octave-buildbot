@@ -51,18 +51,20 @@ jobs:
  
       - name: check build id
         id: check-id
+        env:
+          TARGET: ${{ matrix.target }}
         run: |
           BUILDID=$(curl -s "https://buildbot.octave.space/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
           echo "::set-output name=BUILDID::${BUILDID}"
           echo buildid: "${BUILDID}"
-          mkdir -p oldid
-          test -f oldid/id && OLDBUILDID=$(cat oldid/id)
+          mkdir -p oldid/${TARGET}
+          test -f oldid/${TARGET}/id && OLDBUILDID=$(cat oldid/${TARGET}/id)
           echo "::set-output name=OLDBUILDID::${OLDBUILDID}"
           echo oldbuildid: "${OLDBUILDID}"
 
       - name: download build
         id: download
-        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
           FILE_SUFFIX: ${{ matrix.file-suffix }}
@@ -73,14 +75,14 @@ jobs:
           echo "::set-output name=FILE7Z::${FILE7Z}"
 
       - name: unpack
-        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         shell: cmd
         env:
           FILE_SUFFIX: ${{ matrix.file-suffix }}
         run: 7z.exe x -y octave-%FILE_SUFFIX%.7z
 
       - name: prepare
-        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
@@ -89,7 +91,7 @@ jobs:
           ./post-install.bat
 
       - name: run test suite
-        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
@@ -98,7 +100,7 @@ jobs:
           ./mingw64/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
 
       - name: display log
-        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
@@ -109,4 +111,5 @@ jobs:
       - name: save old build id
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
-        run: echo $BUILDID > oldid/id
+          TARGET: ${{ matrix.target }}
+        run: echo $BUILDID > oldid/${TARGET}/id
