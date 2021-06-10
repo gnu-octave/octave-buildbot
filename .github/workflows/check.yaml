@@ -26,15 +26,19 @@ jobs:
           - target: w64-default
             file-suffix: default-w64
             folder-suffix: w64
+            mingw-prefix: mingw64
           - target: w64
             file-suffix: w64
             folder-suffix: w64
+            mingw-prefix: mingw64
           - target: w64-64
             file-suffix: w64-64
             folder-suffix: w64-64
+            mingw-prefix: mingw64
           - target: w32
             file-suffix: w32
             folder-suffix: w32
+            mingw-prefix: mingw32
 
     env:
       MSYSTEM: MSYS
@@ -101,9 +105,10 @@ jobs:
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
+          MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         run: |
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
-          ./mingw64/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
+          ./${MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
 
       - name: display log
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
