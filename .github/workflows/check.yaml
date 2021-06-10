@@ -105,8 +105,9 @@ jobs:
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
-          MINGW_PREFIX: ${{ matrix.mingw-prefix }}
+          #MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         run: |
+          echo MINGW_PREFIX: ${MINGW_PREFIX}
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./${MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
 
