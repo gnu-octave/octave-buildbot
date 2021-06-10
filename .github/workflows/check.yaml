@@ -21,10 +21,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [w64-default]
+        target: [w64-default, w64]
         include:
           - target: w64-default
             file-suffix: default-w64
+            folder-suffix: w64
+          - target: w64
+            file-suffix: w64
             folder-suffix: w64
 
     env:
