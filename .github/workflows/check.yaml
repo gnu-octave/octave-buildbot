@@ -65,16 +65,16 @@ jobs:
           FILE_SUFFIX: ${{ matrix.file-suffix }}
         run: |
           wget --no-check-certificate -O index.html "https://www.octave.space/data/stable/${BUILDID}/"
-          FILE7Z=$(grep -r "\-default-w64.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-${FILE_SUFFIX}.7z" | head -n1 -)
+          FILE7Z=$(grep -r "\-${FILE_SUFFIX}.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-${FILE_SUFFIX}.7z" | head -n1 -)
           wget --no-check-certificate -O octave-${FILE_SUFFIX}.7z "https://www.octave.space/data/stable/${BUILDID}/${FILE7Z}"
           echo "::set-output name=FILE7Z::${FILE7Z}"
 
       - name: unpack
         #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
-        shell: pwsh
+        shell: cmd
         env:
           FILE_SUFFIX: ${{ matrix.file-suffix }}
-        run: 7z.exe x -y octave-${FILE_SUFFIX}.7z
+        run: 7z.exe x -y octave-%FILE_SUFFIX%.7z
 
       - name: prepare
         #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
