@@ -20,6 +20,12 @@ jobs:
 
     strategy:
       fail-fast: false
+      matrix:
+        target: [w64-default]
+        include:
+          - target: w64-default
+            file-suffix: default-w64
+            folder-suffix: w64
 
     env:
       MSYSTEM: MSYS
@@ -36,9 +42,9 @@ jobs:
         id: setup-cache
         uses: actions/cache@v2
         with:
-          path: oldid
-          key: oldid:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
-          restore-keys: oldid
+          path: oldid/${{ matrix.target }}
+          key: oldid:${{ matrix.target }}:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          restore-keys: oldid:${{ matrix.target }}
  
       - name: check build id
         id: check-id
@@ -53,42 +59,48 @@ jobs:
 
       - name: download build
         id: download
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
+          FILE_SUFFIX: ${{ matrix.file-suffix }}
         run: |
           wget --no-check-certificate -O index.html "https://www.octave.space/data/stable/${BUILDID}/"
-          FILE7Z=$(grep -r "\-default-w64.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-default-w64.7z" | head -n1 -)
-          wget --no-check-certificate -O octave-default-w64.7z "https://www.octave.space/data/stable/${BUILDID}/${FILE7Z}"
+          FILE7Z=$(grep -r "\-default-w64.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-${FILE_SUFFIX}.7z" | head -n1 -)
+          wget --no-check-certificate -O octave-${FILE_SUFFIX}.7z "https://www.octave.space/data/stable/${BUILDID}/${FILE7Z}"
           echo "::set-output name=FILE7Z::${FILE7Z}"
 
       - name: unpack
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         shell: pwsh
-        run: 7z.exe x -y octave-default-w64.7z
+        env:
+          FILE_SUFFIX: ${{ matrix.file-suffix }}
+        run: 7z.exe x -y octave-${FILE_SUFFIX}.7z
 
       - name: prepare
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
         run: |
-          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")w64
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./post-install.bat
 
       - name: run test suite
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
         run: |
-          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")w64
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./mingw64/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
 
       - name: display log
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        #if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
         run: |
-          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")w64
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           cat ./fntests.log
 
       - name: save old build id
