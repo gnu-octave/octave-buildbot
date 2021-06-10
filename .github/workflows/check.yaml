@@ -111,7 +111,7 @@ jobs:
           echo MXE Octave hg id:
           cat HG-ID
           echo Octave hg id:
-          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval "fprintf ('%s', version ('hg_id'))"
+          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-hgid'))"
 
       - name: run test suite
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
