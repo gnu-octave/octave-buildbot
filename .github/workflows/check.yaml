@@ -53,7 +53,9 @@ jobs:
 
       - name: setup cache
         id: setup-cache
-        uses: actions/cache@v2
+        # uses: actions/cache@v2
+        # The original action doesn't upload on error. Use this fork instead.
+        uses: pat-s/always-upload-cache@v2
         with:
           path: oldid/${{ matrix.target }}
           key: oldid:${{ matrix.target }}:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
@@ -121,7 +123,7 @@ jobs:
           MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         run: |
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
-          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__
+          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
 
       - name: display log
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
@@ -133,7 +135,13 @@ jobs:
           cat ./fntests.log
 
       - name: save old build id
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
           TARGET: ${{ matrix.target }}
         run: echo $BUILDID > oldid/${TARGET}/id
+
+      - name: analyze test suite result
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        run: |
+          [ -n "$(grep -r "FAIL\s*0" ./test-suite.log)" ] || exit 1
