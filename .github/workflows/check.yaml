@@ -121,7 +121,10 @@ jobs:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
           MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
+        # Write access to the /tmp folder that MSYS2 uses by default seems to be restricted.
         run: |
+          export TMP="$RUNNER_TEMP"
+          export TEMP="$RUNNER_TEMP"
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
 
