@@ -148,4 +148,5 @@ jobs:
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
         run: |
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
-          [ -n "$(grep -r "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
