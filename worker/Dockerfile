@@ -103,6 +103,7 @@ RUN apt-get --yes update  && \
       xvfb \
       zlib1g-dev \
       zip \
+      zstd \
       # Test runs produce a great quantity of dead grandchild processes.
       # In a non-docker environment, these are automatically reaped by init
       # (process 1), so we need to simulate that here.
