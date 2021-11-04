@@ -58,11 +58,7 @@ def categorizeFiles(files):
       filename = f["name"]
       _, ext = os.path.splitext(filename)
       ext = ext[1:]
-      if "doxyhtml.zip" in filename:
-        files_sorted["doxygen"].setdefault(ext, []).append(f)
-      elif "doxyhtml" in filename:
-        files_sorted["doxygen"].setdefault("html", []).append(f)
-      elif "interpreter.zip" in filename:
+      if "interpreter.zip" in filename:
         files_sorted["manual"].setdefault(ext, []).append(f)
       elif "octave.html" in filename:
         files_sorted["manual"].setdefault(ext, []).append(f)
