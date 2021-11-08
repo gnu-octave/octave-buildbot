@@ -32,7 +32,7 @@ jobs:
             folder-suffix: w64
             mingw-prefix: mingw64
           - target: w64-64
-            file-suffix: w64-64
+            file-suffix: default-w64-64
             folder-suffix: w64-64
             mingw-prefix: mingw64
           - target: w32
