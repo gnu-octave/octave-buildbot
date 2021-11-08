@@ -98,9 +98,12 @@ jobs:
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
+          MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         run: |
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./post-install.bat
+          echo "Use OpenBLAS"
+          cp ./${MY_MINGW_PREFIX}/bin/libopenblas.dll ./${MY_MINGW_PREFIX}/bin/libblas.dll
 
       - name: show hg ids
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
