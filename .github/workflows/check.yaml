@@ -28,15 +28,15 @@ jobs:
             folder-suffix: w64
             mingw-prefix: mingw64
           - target: w64
-            file-suffix: w64
+            file-suffix: release-w64
             folder-suffix: w64
             mingw-prefix: mingw64
           - target: w64-64
-            file-suffix: w64-64
+            file-suffix: release-w64-64
             folder-suffix: w64-64
             mingw-prefix: mingw64
           - target: w32
-            file-suffix: w32
+            file-suffix: release-w32
             folder-suffix: w32
             mingw-prefix: mingw32
 
