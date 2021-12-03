@@ -110,26 +110,24 @@ jobs:
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
-          MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         run: |
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           echo MXE Octave hg id:
           cat HG-ID
           echo Octave hg id:
-          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-hgid'))"
+          ./octave-launch.exe --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-hgid'))"
 
       - name: run test suite
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           FILE7Z: ${{ steps.download.outputs.file7z }}
           FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
-          MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
         # Write access to the /tmp folder that MSYS2 uses by default seems to be restricted.
         run: |
           export TMP="$RUNNER_TEMP"
           export TEMP="$RUNNER_TEMP"
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
-          ./${MY_MINGW_PREFIX}/bin/octave.bat --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
+          ./octave-launch.exe --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
 
       - name: display log
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
