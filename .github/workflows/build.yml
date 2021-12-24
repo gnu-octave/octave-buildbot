@@ -42,9 +42,9 @@ jobs:
           file: ${{ matrix.type }}/Dockerfile
           push: true
           tags: gnuoctave/buildbot:latest-${{ matrix.type }}
-      #- # copy multiplatform image from dockerhub to ghcr
-      #  name: Push Image to multiple registries
-      #  uses: akhilerm/tag-push-action@v1.0.0
-      #  with:
-      #    src: gnuoctave/buildbot:latest-${{ matrix.type }}
-      #    dst: ghcr.io/gnu-octave/buildbot:latest-${{ matrix.type }}
+      - # copy multiplatform image from dockerhub to ghcr
+        name: Push Image to multiple registries
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: gnuoctave/buildbot:latest-${{ matrix.type }}
+          dst: ghcr.io/gnu-octave/buildbot:latest-${{ matrix.type }}
