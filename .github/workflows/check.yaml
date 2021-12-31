@@ -134,6 +134,7 @@ jobs:
         run: |
           export TMP="$RUNNER_TEMP"
           export TEMP="$RUNNER_TEMP"
+          export OPENBLAS_NUM_THREADS=2
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           ./octave-launch.exe --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
 
