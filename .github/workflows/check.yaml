@@ -160,3 +160,78 @@ jobs:
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+
+      - name: test packages
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
+          MY_MINGW_PREFIX: ${{ matrix.mingw-prefix }}
+        run: |
+          export TMP="$RUNNER_TEMP"
+          export TEMP="$RUNNER_TEMP"
+          export OPENBLAS_NUM_THREADS=2
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
+          pkgs=("audio"
+                "biosig"
+                "communications"
+                "control"
+                "data-smoothing"
+                "database"
+                "dicom"
+                "financial"
+                "fits"
+                "fuzzy-logic-toolkit"
+                "ga"
+                "general"
+                "generate_html"
+                "geometry"
+                "gsl"
+                "image"
+                "instrument-control"
+                "interval"
+                "io"
+                "linear-algebra"
+                "lssa"
+                "ltfat"
+                "mapping"
+                "matgeom"
+                "miscellaneaous"
+                "nan"
+                "netcdf"
+                "nurbs"
+                "ocs"
+                "octproj"
+                "optim"
+                "optiminterp"
+                "quaternion"
+                "queueing"
+                "signal"
+                "sockets"
+                "sparsersb"
+                "splines"
+                "statistics"
+                "stk"
+                "strings"
+                "struct"
+                "symbolic"
+                "tisean"
+                "tsa"
+                "video"
+                "windows"
+                "zeromq")
+          for pkg in "${pkgs[@]}"
+          do
+            printf "   \033[0;32m==>\033[0m Testing package \033[0;32m${pkg}\033[0m\n"
+            echo "::group::Test package $pkg"
+            ./octave-launch.exe --no-init-file --silent --no-history --eval "pkg('test','$pkg')" | tee ./test-$pkg.log
+            echo "::endgroup::"
+            echo "::group::Display log for package $pkg"
+            cat ./fntests.log
+            echo "::endgroup::"
+            echo "::group::Analyze test results for package $pkg"
+            [ -n "$(grep -e "FAIL\s*0" ./test-$pkg.log)" ] || echo "::warning::At least one test failed for package $pkg"
+            [ -z "$(grep -e "REGRESSION" ./test-$pkg.log)" ] || echo "::warning::At least one regression in tests for package $pkg"
+            echo Finished analyzing test results for package $pkg
+            echo "::endgroup::"
+          done
