@@ -219,11 +219,9 @@ jobs:
             echo "::group::Display log for package $pkg"
             cat ./fntests.log
             echo "::endgroup::"
-            echo "::group::Analyze test results for package $pkg"
             [ -n "$(grep -e "FAIL\s*0" ./test-$pkg.log)" ] || echo "::warning::At least one test failed for package $pkg"
             [ -z "$(grep -e "REGRESSION" ./test-$pkg.log)" ] || echo "::warning::At least one regression in tests for package $pkg"
-            echo Finished analyzing test results for package $pkg
-            echo "::endgroup::"
+            echo Finished tests for package $pkg
           done
 
       - name: analyze test suite result
