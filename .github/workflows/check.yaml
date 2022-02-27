@@ -151,16 +151,6 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: echo $BUILDID > oldid/${TARGET}/id
 
-      - name: analyze test suite result
-        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
-        env:
-          FILE7Z: ${{ steps.download.outputs.file7z }}
-          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
-        run: |
-          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
-
       - name: test packages
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
@@ -235,3 +225,13 @@ jobs:
             echo Finished analyzing test results for package $pkg
             echo "::endgroup::"
           done
+
+      - name: analyze test suite result
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
+        run: |
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
