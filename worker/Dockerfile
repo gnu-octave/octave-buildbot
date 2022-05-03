@@ -148,6 +148,15 @@ RUN SUNDIALS_VERSION=5.8.0  && \
     make install      && \
     rm -rf /tmp/build
 
+# Install RapidJSON
+
+RUN mkdir -p /tmp/build     && \
+    cd       /tmp/build     && \
+    wget -q "https://github.com/Tencent/rapidjson/archive/master.tar.gz" && \
+    tar -xf master.tar.gz   && \
+    mv /tmp/build/rapidjson-master/include/rapidjson /usr/include && \
+    rm -rf /tmp/build
+
 # Prepare ccache
 
 RUN ln -s /usr/bin/ccache /usr/local/bin/gcc && \
