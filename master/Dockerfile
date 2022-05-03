@@ -9,7 +9,7 @@
 # The Master image is not optimized for size, but rather uses Ubuntu for wider
 # package availability.
 
-FROM  ubuntu:20.04
+FROM  ubuntu:22.04
 LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
 ENV LAST_UPDATED=2022-05-01
