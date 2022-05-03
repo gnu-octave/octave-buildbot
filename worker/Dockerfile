@@ -118,6 +118,7 @@ RUN apt-get --yes update  && \
     pip3 install --upgrade --no-cache-dir \
       'twisted[tls]' 'buildbot[bundle]' virtualenv
 
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 # Install Sundials
 
