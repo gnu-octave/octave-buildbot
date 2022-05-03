@@ -121,7 +121,7 @@ RUN apt-get --yes update  && \
 
 # Install Sundials
 
-RUN SUNDIALS_VERSION=5.7.0  && \
+RUN SUNDIALS_VERSION=5.8.0  && \
     mkdir -p /tmp/build     && \
     cd       /tmp/build     && \
     wget -q "https://github.com/LLNL/sundials/releases/download/v${SUNDIALS_VERSION}/sundials-${SUNDIALS_VERSION}.tar.gz" && \
@@ -133,7 +133,7 @@ RUN SUNDIALS_VERSION=5.7.0  && \
       -DEXAMPLES_ENABLE_C=OFF                      \
       -DENABLE_KLU=ON                              \
       -DKLU_INCLUDE_DIR=/usr/include/suitesparse   \
-      -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu  \
+      -DKLU_LIBRARY_DIR=/usr/lib                   \
       -DBUILD_ARKODE=OFF                           \
       -DBUILD_CVODE=OFF                            \
       -DBUILD_CVODES=OFF                           \
