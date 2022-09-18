@@ -12,7 +12,7 @@
 FROM  ubuntu:22.04
 LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
-ENV LAST_UPDATED=2022-08-01
+ENV LAST_UPDATED=2022-09-01
 
 # Install security updates and required packages.
 
