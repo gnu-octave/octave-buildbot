@@ -54,7 +54,7 @@ jobs:
         # Create human readable timestamp
         id: cache_timestamp
         run: |
-          echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
 
       - name: setup cache
         id: setup-cache
@@ -72,11 +72,11 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: |
           BUILDID=$(curl -s "https://buildbot.octave.space/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
-          echo "::set-output name=BUILDID::${BUILDID}"
+          echo "buildid=${BUILDID}" >> $GITHUB_OUTPUT
           echo buildid: "${BUILDID}"
           mkdir -p oldid/${TARGET}
           test -f oldid/${TARGET}/id && OLDBUILDID=$(cat oldid/${TARGET}/id)
-          echo "::set-output name=OLDBUILDID::${OLDBUILDID}"
+          echo "oldbuildid=${OLDBUILDID}" >> $GITHUB_OUTPUT
           echo oldbuildid: "${OLDBUILDID}"
 
       - name: download build
@@ -89,7 +89,7 @@ jobs:
           curl --insecure --output index.html "https://www.octave.space/data/stable/${BUILDID}/"
           FILE7Z=$(grep -r "\-${FILE_SUFFIX}.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-${FILE_SUFFIX}.7z" | head -n1 -)
           curl --insecure --output octave-${FILE_SUFFIX}.7z "https://www.octave.space/data/stable/${BUILDID}/${FILE7Z}"
-          echo "::set-output name=FILE7Z::${FILE7Z}"
+          echo "file7z=${FILE7Z}" >> $GITHUB_OUTPUT
 
       - name: unpack
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
@@ -144,7 +144,7 @@ jobs:
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
           cat ./fntests.log
 
-      - name: save old build id
+      - name: save current build id
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
