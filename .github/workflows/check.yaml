@@ -72,12 +72,12 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: |
           BUILDID=$(curl -s "https://buildbot.octave.space/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
-          echo "buildid=${BUILDID}" >> $GITHUB_OUTPUT
           echo buildid: "${BUILDID}"
+          echo "buildid=${BUILDID}" >> $GITHUB_OUTPUT
           mkdir -p oldid/${TARGET}
           test -f oldid/${TARGET}/id && OLDBUILDID=$(cat oldid/${TARGET}/id)
-          echo "oldbuildid=${OLDBUILDID}" >> $GITHUB_OUTPUT
           echo oldbuildid: "${OLDBUILDID}"
+          echo "oldbuildid=${OLDBUILDID}" >> $GITHUB_OUTPUT
 
       - name: download build
         id: download
@@ -170,7 +170,6 @@ jobs:
                 "database"
                 "dicom"
                 "financial"
-                "fits"
                 "fuzzy-logic-toolkit"
                 "ga"
                 "general"
