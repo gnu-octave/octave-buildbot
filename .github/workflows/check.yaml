@@ -107,6 +107,11 @@ jobs:
           ./post-install.bat
           echo "Use OpenBLAS"
           cp ./${MY_MINGW_PREFIX}/bin/libopenblas.dll ./${MY_MINGW_PREFIX}/bin/libblas.dll
+          # use system OpenGL drivers for 32-bit to avoid crash on printing with llvmpipe
+          if [ x${{ matrix.target }} = xw32 ]; then \
+            echo "Use system OpenGL drivers"
+            mv -f ./${MY_MINGW_PREFIX}/bin/opengl32.dll ./${MY_MINGW_PREFIX}/bin/opengl32.bak
+          fi
 
       - name: show hg ids
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
