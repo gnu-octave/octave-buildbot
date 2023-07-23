@@ -123,7 +123,7 @@ jobs:
           echo MXE Octave hg id:
           cat HG-ID
           echo Octave hg id:
-          ./octave-launch.exe --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-hgid'))"
+          ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-hgid'))"
 
       - name: run test suite
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
@@ -136,7 +136,7 @@ jobs:
           export TEMP="$RUNNER_TEMP"
           export OPENBLAS_NUM_THREADS=2
           cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
-          ./octave-launch.exe --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
+          ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval __run_test_suite__ | tee ./test-suite.log
 
       - name: display log
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
@@ -226,7 +226,7 @@ jobs:
           do
             printf "   \033[0;32m==>\033[0m Testing package \033[0;32m${pkg}\033[0m\n"
             echo "::group::Test package $pkg"
-            ( ./octave-launch.exe --no-init-file --silent --no-history --eval "pkg('test','$pkg')" \
+            ( ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval "pkg('test','$pkg')" \
               || echo "::error::Octave terminated with error code $? during tests for package $pkg" ) \
               | tee ./test-$pkg.log
             echo "::endgroup::"
