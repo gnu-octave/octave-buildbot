@@ -48,6 +48,7 @@ RUN apt-get --yes update  && \
     pip3 install --upgrade --no-cache-dir pip && \
     pip3 install --upgrade --no-cache-dir \
       'buildbot[tls]' \
+      buildbot-console-view \
       buildbot-wsgi-dashboards \
       buildbot-waterfall-view \
       buildbot-www \
