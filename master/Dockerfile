@@ -47,7 +47,7 @@ RUN apt-get --yes update  && \
     # Install required python packages
     pip3 install --upgrade --no-cache-dir pip && \
     pip3 install --upgrade --no-cache-dir \
-      'buildbot[tls]' virtualenv Flask buildbot-wsgi-dashboards
+      'buildbot[tls]' virtualenv Flask buildbot-www buildbot-wsgi-dashboards
 
 # Prepare master directory
 
