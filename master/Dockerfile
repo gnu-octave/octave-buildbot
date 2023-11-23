@@ -12,7 +12,7 @@
 FROM  ubuntu:22.04
 LABEL maintainer="Kai T. Ohlhus <k.ohlhus@gmail.com>"
 
-ENV LAST_UPDATED=2023-06-01
+ENV LAST_UPDATED=2023-11-23
 
 # Install security updates and required packages.
 
@@ -47,7 +47,7 @@ RUN apt-get --yes update  && \
     # Install required python packages
     pip3 install --upgrade --no-cache-dir pip && \
     pip3 install --upgrade --no-cache-dir \
-      'twisted[tls]' 'buildbot[bundle]' virtualenv Flask \
+      'buildbot[tls]' virtualenv Flask \
       buildbot-profiler buildbot-wsgi-dashboards
 
 # Prepare master directory
