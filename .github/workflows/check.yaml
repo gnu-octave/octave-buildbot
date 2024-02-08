@@ -54,7 +54,7 @@ jobs:
 
       - name: setup cache
         id: setup-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: oldid/${{ matrix.target }}
           key: oldid:${{ matrix.target }}:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
@@ -147,7 +147,7 @@ jobs:
 
       - name: save cache with build id
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: oldid/${{ matrix.target }}
           key: oldid:${{ matrix.target }}:${{ steps.cache_timestamp.outputs.timestamp }}:${{ github.sha }}
