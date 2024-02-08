@@ -208,6 +208,7 @@ jobs:
                 "strings"
                 "struct"
                 "symbolic"
+                "tablicious"
                 "tisean"
                 "tsa"
                 "video"
