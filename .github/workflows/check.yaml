@@ -65,7 +65,7 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
         run: |
-          BUILDID=$(curl -s "https://buildbot.octave.space/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
+          BUILDID=$(curl -s "https://nightly.octave.org/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
           echo buildid: "${BUILDID}"
           echo "buildid=${BUILDID}" >> $GITHUB_OUTPUT
           mkdir -p oldid/${TARGET}
@@ -80,9 +80,9 @@ jobs:
           BUILDID: ${{ steps.check-id.outputs.buildid }}
           FILE_SUFFIX: ${{ matrix.file-suffix }}
         run: |
-          curl --insecure --output index.html "https://www.octave.space/data/stable/${BUILDID}/"
+          curl --insecure --output index.html "https://nightly.octave.org/data/stable/${BUILDID}/"
           FILE7Z=$(grep -r "\-${FILE_SUFFIX}.7z" index.html | grep -o -P -m 1 "octave-[0-9\-]*-${FILE_SUFFIX}.7z" | head -n1 -)
-          curl --insecure --output octave-${FILE_SUFFIX}.7z "https://www.octave.space/data/stable/${BUILDID}/${FILE7Z}"
+          curl --insecure --output octave-${FILE_SUFFIX}.7z "https://nightly.octave.org/data/stable/${BUILDID}/${FILE7Z}"
           echo "file7z=${FILE7Z}" >> $GITHUB_OUTPUT
 
       - name: unpack
