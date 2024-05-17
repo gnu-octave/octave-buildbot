@@ -217,7 +217,8 @@ jobs:
           do
             printf "   \033[0;32m==>\033[0m Testing package \033[0;32m${pkg}\033[0m\n"
             echo "::group::Test package $pkg"
-            ( ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval "pkg('test','$pkg')" \
+            ( ./octave-launch.exe --no-gui --no-init-file --silent --no-history \
+                --eval "installed_pkg = pkg ('list', '$pkg'); fprintf ('version: %s\n', installed_pkg{1}.version); pkg ('test', '$pkg')" \
               || echo "::error::Octave terminated with error code $? during tests for package $pkg" ) \
               | tee ./test-$pkg.log
             echo "::endgroup::"
