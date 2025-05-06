@@ -198,6 +198,7 @@ jobs:
                 "octproj"
                 "optim"
                 "optiminterp"
+                "parallel"
                 "quaternion"
                 "queueing"
                 "signal"
