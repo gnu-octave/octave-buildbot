@@ -173,6 +173,7 @@ jobs:
                 "dataframe"
                 "dicom"
                 "financial"
+                "fl-core"
                 "fuzzy-logic-toolkit"
                 "ga"
                 "general"
