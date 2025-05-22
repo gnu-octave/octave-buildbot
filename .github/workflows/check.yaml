@@ -166,6 +166,7 @@ jobs:
           pkgs=("audio"
                 "biosig"
                 "cfitsio"
+                "coder"
                 "communications"
                 "control"
                 "data-smoothing"
