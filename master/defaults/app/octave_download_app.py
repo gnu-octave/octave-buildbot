@@ -99,9 +99,9 @@ def main():
   # URL, where Octave builds are visible to the public.
   config["data_url"] = octavedownloadapp.config["DATA_URL"]
   # Repository from which Octave is built.
-  config["repo_url"] = octavedownloadapp.config["OCTAVE_HG_REPO_URL"]
+  config["repo_url"] = octavedownloadapp.config["OCTAVE_GIT_REPO_URL"]
   # URL-prefix to changes in the repository from which Octave is built.
-  config["repo_change_url"] = octavedownloadapp.config["OCTAVE_HG_REPO_CHANGE_URL"]
+  config["repo_change_url"] = octavedownloadapp.config["OCTAVE_GIT_REPO_CHANGE_URL"]
 
   buildbot_data = getBuildBotData()
 
