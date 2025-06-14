@@ -76,7 +76,7 @@
     <summary>
       <b>Octave {{build.builds[0].properties.OCTAVE_VERSION[0]}}</b>
       &nbsp;&nbsp;
-      (hg id: <a target="_blank" href="{{config.repo_change_url}}/{{build.builds[0].properties.OCTAVE_GIT_REV[0]}}">{{build.builds[0].properties.OCTAVE_GIT_REV[0]}}</a>)
+      (git rev: <a target="_blank" href="{{config.repo_change_url}}/{{build.builds[0].properties.OCTAVE_GIT_REV[0]}}">{{build.builds[0].properties.OCTAVE_GIT_REV[0]}}</a>)
       &nbsp;&nbsp;
       {{build.date}}
     </summary>
@@ -149,9 +149,7 @@
   <p><b>Info:</b></p>
   <ul>
     <li>
-      hg id:
-      <a href="https://www.mercurial-scm.org/wiki/ChangeSetID">Mercurial (hg) changeset</a>
-      identification at
+      git rev: commit identifier in
       <a href="{{config.repo_url}}">{{config.repo_url}}</a>.
     </li>
     <li>
