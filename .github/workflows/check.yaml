@@ -116,6 +116,16 @@ jobs:
           echo Octave hg id:
           ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-hgid'))"
 
+      - name: show Octave configuration
+        if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
+        env:
+          FILE7Z: ${{ steps.download.outputs.file7z }}
+          FOLDER_SUFFIX: ${{ matrix.folder-suffix }}
+        run: |
+          cd $(echo ${FILE7Z} | grep -o -P "octave-[0-9\-]*")${FOLDER_SUFFIX}
+          echo __octave_config_info__:
+          ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval __octave_config_info__
+
       - name: run test suite
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
         env:
