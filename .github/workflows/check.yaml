@@ -5,9 +5,14 @@ on:
   workflow_dispatch:
     inputs:
       build_id:
-        description: "Override BUILD_ID (optional)"
+        description: "Override build id (optional)"
         required: false
         type: string
+      ignore_old_build_id:
+        description: "Ignore value of old build id (optional)"
+        required: false
+        default: false
+        type: boolean
   schedule:
     # Run job every day at 22:30 UTC
     - cron: '30 22 * * *'
@@ -80,7 +85,13 @@ jobs:
           echo buildid: "${BUILDID}"
           echo "buildid=${BUILDID}" >> $GITHUB_OUTPUT
           mkdir -p oldid/${TARGET}
-          test -f oldid/${TARGET}/id && OLDBUILDID=$(cat oldid/${TARGET}/id)
+          if [ "${{ github.event.inputs.ignore_old_build_id }}" == "true" ]; then
+            echo "Ignoring previous build id"
+            OLDBUILDID=""
+          else
+            echo "Checking previous build id"
+            test -f oldid/${TARGET}/id && OLDBUILDID=$(cat oldid/${TARGET}/id)
+          fi
           echo oldbuildid: "${OLDBUILDID}"
           echo "oldbuildid=${OLDBUILDID}" >> $GITHUB_OUTPUT
 
