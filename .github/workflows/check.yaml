@@ -125,6 +125,8 @@ jobs:
           ./post-install.bat
           echo "Use OpenBLAS"
           cp ./${MY_MINGW_PREFIX}/bin/libopenblas.dll ./${MY_MINGW_PREFIX}/bin/libblas.dll
+          echo BLAS version information:
+          ./octave-launch.exe --no-gui --no-init-file --silent --no-history --eval "fprintf ('%s', version ('-blas'))"
 
       - name: show hg ids
         if: steps.check-id.outputs.buildid != steps.check-id.outputs.oldbuildid
