@@ -3,6 +3,11 @@ name: "freshly brewed Octave"
 on:
   # push:
   workflow_dispatch:
+    inputs:
+      build_id:
+        description: "Override BUILD_ID (optional)"
+        required: false
+        type: string
   schedule:
     # Run job every day at 22:30 UTC
     - cron: '30 22 * * *'
@@ -65,7 +70,13 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
         run: |
-          BUILDID=$(curl -s "https://nightly.octave.org/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
+          if [ -n "${{ github.event.inputs.build_id }}" ]; then
+            echo "Using build id from workflow_dispatch input"
+            BUILDID=${{ github.event.inputs.build_id }}
+          else
+            echo "Getting latest build id from nightly server"
+            BUILDID=$(curl -s "https://nightly.octave.org/api/v2/builders/octave/builds?state_string__eq=build%20successful&order=-started_at&limit=1" | grep "number" | grep -o "[0-9]*")
+          fi
           echo buildid: "${BUILDID}"
           echo "buildid=${BUILDID}" >> $GITHUB_OUTPUT
           mkdir -p oldid/${TARGET}
