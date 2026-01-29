@@ -206,6 +206,7 @@ jobs:
                 "data-smoothing"
                 "database"
                 "dataframe"
+                "datatypes"
                 "dicom"
                 "financial"
                 "fl-core"
